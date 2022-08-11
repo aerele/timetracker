@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-08-09 12:18:10.168691",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "project",
+  "column_break_8",
+  "teammates",
+  "column_break_3",
+  "from",
+  "column_break_2",
+  "to",
+  "section_break_7",
+  "details",
+  "totals"
+ ],
+ "fields": [
+  {
+   "fieldname": "project",
+   "fieldtype": "Table MultiSelect",
+   "label": "Project(s)",
+   "options": "Time Tracker Project"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "teammates",
+   "fieldtype": "Table MultiSelect",
+   "label": "Teammate(s)",
+   "options": "Time Tracker Teammate"
+  },
+  {
+   "fieldname": "from",
+   "fieldtype": "Date",
+   "label": "From"
+  },
+  {
+   "fieldname": "to",
+   "fieldtype": "Data",
+   "label": "To"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "label": "Details",
+   "options": "Time Tracker Detail"
+  },
+  {
+   "fieldname": "totals",
+   "fieldtype": "Table",
+   "label": "Totals",
+   "options": "Time Tracker Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2022-08-09 12:35:57.403151",
+ "modified_by": "Administrator",
+ "module": "Time Tracker",
+ "name": "Time Tracker",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
