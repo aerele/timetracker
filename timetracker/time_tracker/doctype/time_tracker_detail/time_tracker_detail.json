@@ -7,6 +7,10 @@
  "engine": "InnoDB",
  "field_order": [
   "task",
+  "project",
+  "column_break_3",
+  "task_name",
+  "section_break_5",
   "day_1",
   "day_2",
   "day_3",
@@ -27,63 +31,101 @@
   {
    "fieldname": "day_1",
    "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Mon"
   },
   {
    "default": "0",
    "fieldname": "day_2",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Tue"
   },
   {
    "default": "0",
    "fieldname": "day_3",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Wed"
   },
   {
    "default": "0",
    "fieldname": "day_4",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Thu"
   },
   {
    "default": "0",
    "fieldname": "day_5",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Fri"
   },
   {
    "default": "0",
    "fieldname": "day_6",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Sat"
   },
   {
    "default": "0",
    "fieldname": "day_7",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Sun"
   },
   {
    "default": "0",
    "fieldname": "total",
-   "fieldtype": "Float",
+   "fieldtype": "Duration",
+   "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Total"
+   "label": "Total",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "task.subject",
+   "fieldname": "task_name",
+   "fieldtype": "Read Only",
+   "label": "Task Name"
+  },
+  {
+   "fetch_from": "task.project",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-08-09 13:52:45.178656",
+ "modified": "2022-08-16 08:47:57.451855",
  "modified_by": "Administrator",
  "module": "Time Tracker",
  "name": "Time Tracker Detail",
