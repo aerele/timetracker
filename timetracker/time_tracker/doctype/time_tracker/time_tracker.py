@@ -10,14 +10,43 @@ class TimeTracker(Document):
 
 
 @frappe.whitelist()
-#  get tasks with status not cancelled and completed based on project and fill it in eachbrow of table
-def get_tasks(projects):
-	# log the value in server console
+def get_tasks(projects, favourite, user):
+
 	projects = json.loads(projects)
+	user = json.loads(user)
+	
 	task_list = []
-	for i in projects:
-		project = i["project"]
-		ls = frappe.db.sql("""select name, subject, project from `tabTask` where project = %s""", i["project"], as_dict=True)
-		task_list += ls
+	if favourite == "1":
+		user = "%"+user[0]+"%"
+		for i in projects:
+			tasks = frappe.db.sql("""select 
+										name, subject, project 
+									from 
+										`tabTask` 
+									where 
+										project = %s and 
+										status!= 'Cancelled' and
+										status != 'Completed' and
+										_liked_by like %s
+									"""
+									, (i, user), as_dict=1)
+			task_list += tasks
+	else:
+		for i in projects:
+			ls = frappe.db.sql("""select 
+									name, subject, project 
+								from 
+									`tabTask` 
+								where 
+									project = %s and 
+									status != 'Completed' and
+									status!= 'Cancelled'
+								""", i, as_dict=True)
+			task_list += ls
 	frappe.errprint(task_list)
 	return task_list
+
+
+@frappe.whitelist()
+def run_sql():
+	return frappe.db.sql("""select name, subject, project from `tabTask`""", as_dict=True)
