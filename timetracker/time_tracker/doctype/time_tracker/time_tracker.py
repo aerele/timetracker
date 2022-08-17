@@ -5,45 +5,73 @@ import frappe
 from frappe.model.document import Document
 import json
 
+
 class TimeTracker(Document):
 	pass
 
 
 @frappe.whitelist()
-def get_tasks(projects, favourite, user):
+def get_tasks(projects, favourite, user, from_date, to_date):
 
 	projects = json.loads(projects)
 	user = json.loads(user)
-	
 	task_list = []
+	task_name_list = []
+
+	task_list = frappe.db.sql("""
+									select
+										tsd.task as name,
+										tsd.from_time as date,
+										ts.parent_project as project,
+										tsd.hours as duration,
+										tsd.name as tsd_name,
+										ts.name as ts_name
+									from
+										`tabTimesheet` as ts 
+									
+									inner join `tabTimesheet Detail` as tsd on ts.name = tsd.parent
+									inner join `tabTask` as t on tsd.task = t.name
+									inner join `tabEmployee` as e on ts.employee = e.name
+
+									where
+										ts.docstatus = 0 and
+										e.user_id = %s and
+										tsd.from_time between %s and %s and
+										ts.parent_project in %s
+								""",(user[0],from_date, to_date, projects), as_dict=1)
+	for i in task_list:
+		task_name_list.append(i.name)
+
+
 	if favourite == "1":
-		user = "%"+user[0]+"%"
-		for i in projects:
-			tasks = frappe.db.sql("""select 
-										name, subject, project 
-									from 
-										`tabTask` 
-									where 
-										project = %s and 
-										status!= 'Cancelled' and
-										status != 'Completed' and
-										_liked_by like %s
-									"""
-									, (i, user), as_dict=1)
-			task_list += tasks
-	else:
-		for i in projects:
-			ls = frappe.db.sql("""select 
+		usr = "%"+user[0]+"%"
+		task_list += frappe.db.sql("""select 
 									name, subject, project 
 								from 
 									`tabTask` 
 								where 
-									project = %s and 
+									project in %s and 
+									status!= 'Cancelled' and
 									status != 'Completed' and
-									status!= 'Cancelled'
-								""", i, as_dict=True)
-			task_list += ls
-	frappe.errprint(task_list)
+									_liked_by like %s and
+									name not in %s
+								""", (projects, usr,task_name_list), as_dict=1)
+	else:
+		task_list += frappe.db.sql("""select 
+								name, subject, project 
+							from 
+								`tabTask` 
+							where 
+								project in %s and 
+								status != 'Completed' and
+								status!= 'Cancelled' and
+								name not in %s
+							""", (projects,task_name_list), as_dict=True)
+
+	frappe.errprint("******************************")
+	for i in task_list:
+		frappe.errprint(i)
+	frappe.errprint("******************************")
 	return task_list
 
 

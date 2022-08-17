@@ -9,6 +9,7 @@ frappe.ui.form.on('Time Tracker', {
 		frm.fields_dict['totals'].grid.wrapper.find('.grid-heading-row').hide();//to hide header row
 		frm.disable_save(); 
 		frm.refresh_fields();
+		frm.fields_dict.details.grid.wrapper.find(".indicator-pill").hide();
 
 		frm.add_custom_button(__('Generate Timesheets'), function(){
 			frappe.show_alert({
@@ -18,7 +19,6 @@ frappe.ui.form.on('Time Tracker', {
 		});
 
 		frm.add_custom_button(__('Submit Timesheets'), function(){
-			// show success message dialogue box
 			frappe.show_alert({
 				message: __('Timesheets Submitted Successfully'),
 				indicator: 'green'
@@ -66,6 +66,9 @@ frappe.ui.form.on('Time Tracker', {
 			};
 		});
 	},
+
+
+
 	from: function (frm) {
 		let projects = []
 		let mates = []
@@ -96,12 +99,22 @@ frappe.ui.form.on('Time Tracker', {
 		}
 
 		if (day_no === 1) {
+			let dates = [];
+			let from_date = new Date(frm.doc.from);
+			let to_date = new Date(frm.doc.to);
+			while (from_date <= to_date) {
+				dates.push(frappe.datetime.get_datetime_as_string(from_date).split(" ")[0]);
+				from_date.setDate(from_date.getDate() + 1);
+			}
+			console.log(dates);
 			frappe.call({
 				method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.get_tasks",
 				args: {
 					projects: projects,
 					favourite: frm.doc.favourite,
-					user: mates
+					user: mates,
+					from_date: frm.doc.from,
+					to_date: frm.doc.to
 				},
 				callback: function (r) {
 					frm.clear_table("details");
@@ -110,12 +123,18 @@ frappe.ui.form.on('Time Tracker', {
 						task.task = r.message[j].name;
 						task.task_name = r.message[j].subject;
 						task.project = r.message[j].project;
+						if(r.message[j].date){
+							let day_number = dates.indexOf((r.message[j].date).split(" ")[0]) + 1;
+							console.log({date:(r.message[j].date).split(" ")[0],day_number});
+							task[`day_${day_number}`] = r.message[j].duration * 3600;
+						}
 						frm.refresh_fields();
 					}
 				}
 			});
 		}
 		frm.refresh_fields();
+		// trigger all the fields in details table
 	},
 
 
