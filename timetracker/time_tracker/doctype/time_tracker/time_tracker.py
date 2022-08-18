@@ -16,7 +16,7 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 	projects = json.loads(projects)
 	user = json.loads(user)
 	task_list = []
-	task_name_list = []
+	task_name_list = ["zzz"]
 
 	task_list = frappe.db.sql("""
 									select

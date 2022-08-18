@@ -86,15 +86,15 @@ frappe.ui.form.on('Time Tracker', {
 		}
 		frm.set_value("to", frappe.datetime.add_days(frm.doc.from, 6));
 		frm.refresh_fields();
+
+
+		//change the lables of details table columns
 		let fields_list = ["day_1", "day_2", "day_3", "day_4", "day_5", "day_6", "day_7"];
 		let week_days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 		for (let i = 0; i < fields_list.length; i++) {
 			let date = new Date(frappe.datetime.add_days(frm.doc.from, i));
 			let day_of_the_week = date.getDay();
 			var day = frappe.meta.get_docfield("Time Tracker Detail", fields_list[i], frm.doc.name);
-			day.label = week_days[day_of_the_week] + "(" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, i)).split("-")[2].split(" ")[0] + ")";
-			var day = frappe.meta.get_docfield("Time Tracker Total", fields_list[i], frm.doc.name);
 			day.label = week_days[day_of_the_week] + "(" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, i)).split("-")[2].split(" ")[0] + ")";
 		}
 
@@ -106,7 +106,6 @@ frappe.ui.form.on('Time Tracker', {
 				dates.push(frappe.datetime.get_datetime_as_string(from_date).split(" ")[0]);
 				from_date.setDate(from_date.getDate() + 1);
 			}
-			console.log(dates);
 			frappe.call({
 				method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.get_tasks",
 				args: {
@@ -118,6 +117,8 @@ frappe.ui.form.on('Time Tracker', {
 				},
 				callback: function (r) {
 					frm.clear_table("details");
+					frm.clear_table("totals");
+					frm.add_child("totals");
 					for (let j = 0; j < r.message.length; j++) {
 						let task = frm.add_child("details");
 						task.task = r.message[j].name;
@@ -127,6 +128,7 @@ frappe.ui.form.on('Time Tracker', {
 							let day_number = dates.indexOf((r.message[j].date).split(" ")[0]) + 1;
 							console.log({date:(r.message[j].date).split(" ")[0],day_number});
 							task[`day_${day_number}`] = r.message[j].duration * 3600;
+							frm.script_manager.trigger(`day_${day_number}`, task.doctype, task.name);
 						}
 						frm.refresh_fields();
 					}
