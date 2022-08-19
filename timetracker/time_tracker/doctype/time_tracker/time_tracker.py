@@ -38,7 +38,7 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 										e.user_id = %s and
 										tsd.from_time between %s and %s and
 										ts.parent_project in %s
-								""",(user[0],from_date, to_date, projects), as_dict=1)
+								""",(user[0], from_date, to_date, projects), as_dict=1)
 	for i in task_list:
 		task_name_list.append(i.name)
 
@@ -78,3 +78,8 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 @frappe.whitelist()
 def run_sql():
 	return frappe.db.sql("""select name, subject, project from `tabTask`""", as_dict=True)
+
+@frappe.whitelist()
+# create a function to generate timesheet for a particular date
+def generate_timesheet(date, user):
+	return 0

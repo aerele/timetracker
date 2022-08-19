@@ -30,63 +30,46 @@ frappe.ui.form.on('Time Tracker', {
 		frm.clear_table("totals");
 		frm.add_child("totals");
 	},
+
 	project: function (frm) {
+		let projects = []
+		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+		if(projects.length !== 0 && frm.doc.from){ frm.trigger("from"); }
 		frm.set_query("task", "details", function (doc, cdt, cdn) {
-			let projects = []
-			let mates = []
-			for (let i = 0; i < frm.doc.project.length; i++) {
-				projects.push(frm.doc.project[i].project)
-			}
-			for (let j = 0; j < frm.doc.teammates.length; j++) {
-				mates.push(frm.doc.teammates[j].user)
-			}
-
 			return {
 				filters: {
-					project: ["in", projects],
-				}
-			};
-		});
-	},
-	teammates: function (frm) {
-		frm.set_query("task", "details", function (doc, cdt, cdn) {
-			let projects = []
-			let mates = []
-			for (let i = 0; i < frm.doc.project.length; i++) {
-				projects.push(frm.doc.project[i].project)
-			}
-			for (let j = 0; j < frm.doc.teammates.length; j++) {
-				mates.push(frm.doc.teammates[j].user)
-			}
-			return {
-				filters: {
-					project: ["in", projects],
-					// assignee: ["in", mates]
+					project: ["in", projects]
 				}
 			};
 		});
 	},
 
+	user: function (frm) {
+		let projects = []
+		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+		if(projects.length !== 0 && frm.doc.from){ frm.trigger("from"); }
+		frm.set_query("task", "details", function (doc, cdt, cdn) {
+			return {
+				filters: {
+					project: ["in", projects]
+				}
+			};
+		});
+	},
 
+	favourite: function (frm) {
+		let projects = []
+		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+		if(projects.length !== 0 && frm.doc.from && frm.doc.user){ frm.trigger("from"); }
+	},
 
 	from: function (frm) {
-		let projects = []
-		let mates = []
-		for (let i = 0; i < frm.doc.project.length; i++) {
-			projects.push(frm.doc.project[i].project)
-		}
-		for (let j = 0; j < frm.doc.teammates.length; j++) {
-			mates.push(frm.doc.teammates[j].user)
-		}
-
+		if(frm.doc.project.length === 0){ frappe.throw(__("Please select atleast one project")); }
 		let from_date = new Date(frm.doc.from);
 		let day_no = from_date.getDay();
-		if (day_no !== 1) {
-			frm.set_value("from", frappe.datetime.add_days(frm.doc.from, -1 * (day_no - 1)));
-		}
+		if (day_no !== 1) { frm.set_value("from", frappe.datetime.add_days(frm.doc.from, -1 * (day_no - 1))); }
 		frm.set_value("to", frappe.datetime.add_days(frm.doc.from, 6));
 		frm.refresh_fields();
-
 
 		//change the lables of details table columns
 		let fields_list = ["day_1", "day_2", "day_3", "day_4", "day_5", "day_6", "day_7"];
@@ -99,6 +82,9 @@ frappe.ui.form.on('Time Tracker', {
 		}
 
 		if (day_no === 1) {
+			let mates = [frm.doc.user]
+			let projects = []
+			for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
 			let dates = [];
 			let from_date = new Date(frm.doc.from);
 			let to_date = new Date(frm.doc.to);
@@ -106,6 +92,7 @@ frappe.ui.form.on('Time Tracker', {
 				dates.push(frappe.datetime.get_datetime_as_string(from_date).split(" ")[0]);
 				from_date.setDate(from_date.getDate() + 1);
 			}
+
 			frappe.call({
 				method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.get_tasks",
 				args: {
@@ -136,7 +123,6 @@ frappe.ui.form.on('Time Tracker', {
 			});
 		}
 		frm.refresh_fields();
-		// trigger all the fields in details table
 	},
 
 
@@ -194,7 +180,6 @@ frappe.ui.form.on('Time Tracker Detail', {
 	}
 });
 
-
 const compute_total = function (frm, day) {
 	let total = 0;
 	for (let i = 0; i < frm.doc.details.length; i++)
@@ -203,4 +188,3 @@ const compute_total = function (frm, day) {
 	frm.doc.totals[0]["total"] = parseInt(frm.doc.totals[0]["day_1"]) + parseInt(frm.doc.totals[0]["day_2"]) + parseInt(frm.doc.totals[0]["day_3"]) + parseInt(frm.doc.totals[0]["day_4"]) + parseInt(frm.doc.totals[0]["day_5"]) + parseInt(frm.doc.totals[0]["day_6"]) + parseInt(frm.doc.totals[0]["day_7"]);
 	frm.refresh_fields();
 }
-

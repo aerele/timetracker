@@ -11,7 +11,7 @@
  "field_order": [
   "project",
   "column_break_8",
-  "teammates",
+  "user",
   "favourite",
   "column_break_6",
   "from",
@@ -27,12 +27,6 @@
    "fieldtype": "Table MultiSelect",
    "label": "Project(s)",
    "options": "Time Tracker Project"
-  },
-  {
-   "fieldname": "teammates",
-   "fieldtype": "Table MultiSelect",
-   "label": "Teammate(s)",
-   "options": "Time Tracker Teammate"
   },
   {
    "fieldname": "from",
@@ -81,13 +75,19 @@
    "hidden": 1,
    "label": "Tasks",
    "options": "Time Tracker Task List"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-08-17 17:50:05.142035",
+ "modified": "2022-08-19 16:09:09.220202",
  "modified_by": "Administrator",
  "module": "Time Tracker",
  "name": "Time Tracker",
