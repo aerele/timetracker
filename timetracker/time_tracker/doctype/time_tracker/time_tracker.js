@@ -5,11 +5,15 @@
 frappe.ui.form.on('Time Tracker', {
 
 	refresh: function (frm) {
+		if(frappe.user.name !== "Administrator"){
+			frm.set_value("user", frappe.user.name)
+			frm.set_df_property("user", "read_only", 1);
+		}
 		frm.fields_dict['totals'].grid.wrapper.find('.btn-open-row').hide();// to hide edit button
 		frm.fields_dict['totals'].grid.wrapper.find('.grid-heading-row').hide();//to hide header row
 		frm.disable_save();
-		frm.refresh_fields();
 		frm.fields_dict.details.grid.wrapper.find(".indicator-pill").hide();
+		frm.refresh_fields();
 
 		frm.add_custom_button(__('Save'), function () {
 			let timesheet_list = [...new Set(frm.doc.details.map((item) => { if (item.timesheet !== undefined) return item.timesheet }))];
@@ -162,26 +166,12 @@ frappe.ui.form.on('Time Tracker', {
 		let projects = []
 		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
 		if (projects.length !== 0 && frm.doc.from) { frm.trigger("from"); }
-		frm.set_query("task", "details", function (doc, cdt, cdn) {
-			return {
-				filters: {
-					project: ["in", projects]
-				}
-			};
-		});
 	},
 
 	user: function (frm) {
 		let projects = []
 		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
 		if (projects.length !== 0 && frm.doc.from) { frm.trigger("from"); }
-		frm.set_query("task", "details", function (doc, cdt, cdn) {
-			return {
-				filters: {
-					project: ["in", projects]
-				}
-			};
-		});
 	},
 
 	favourite: function (frm) {
@@ -235,8 +225,6 @@ frappe.ui.form.on('Time Tracker', {
 					frm.clear_table("tasks");
 					frm.add_child("totals");
 					for (let j = 0; j < r.message.length; j++) {
-						// let task_list = frm.add_child("tasks");
-						// task_list.task = r.message[j].name;
 						let flag = true;
 						if (r.message[j].date) {
 							for (let i = 0; i < frm.doc.details.length; i++) {
@@ -264,10 +252,12 @@ frappe.ui.form.on('Time Tracker', {
 							frm.refresh_fields();
 						}
 					}
+					set_task_filter(frm);
 				}
 			});
 		}
 		frm.refresh_fields();
+		set_task_filter(frm);
 	},
 
 
@@ -275,10 +265,16 @@ frappe.ui.form.on('Time Tracker', {
 
 
 frappe.ui.form.on('Time Tracker Detail', {
+	details_remove: function (frm) {
+		set_task_filter(frm);
+	},
+
 	details_add: function (frm) {
+		set_task_filter(frm);
 	},
 
 	task: function (frm) {
+		set_task_filter(frm);
 	},
 
 	day_1: function (frm, cdt, cdn) {
@@ -331,5 +327,22 @@ const compute_total = function (frm, day) {
 		total += parseInt(frm.doc.details[i][day]);
 	frm.doc.totals[0][day] = total;
 	frm.doc.totals[0]["total"] = parseInt(frm.doc.totals[0]["day_1"]) + parseInt(frm.doc.totals[0]["day_2"]) + parseInt(frm.doc.totals[0]["day_3"]) + parseInt(frm.doc.totals[0]["day_4"]) + parseInt(frm.doc.totals[0]["day_5"]) + parseInt(frm.doc.totals[0]["day_6"]) + parseInt(frm.doc.totals[0]["day_7"]);
+	frm.refresh_fields();
+}
+
+
+const set_task_filter = (frm) => {
+	let projects = []
+	let tasks = []
+	for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+	for (let i = 0; i < frm.doc.details.length; i++) { tasks.push(frm.doc.details[i].task) }
+	frm.set_query("task", "details", function (doc, cdt, cdn) {
+		return {
+			filters: {
+				project: ["in", projects],
+				name:["not in", tasks]
+			}
+		};
+	});
 	frm.refresh_fields();
 }
