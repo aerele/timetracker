@@ -15,6 +15,7 @@ frappe.ui.form.on('Time Tracker', {
 		frm.fields_dict.details.grid.wrapper.find(".indicator-pill").hide();
 		frm.refresh_fields();
 
+		//Actions for save button
 		frm.add_custom_button(__('Save'), function () {
 			let timesheet_list = [...new Set(frm.doc.details.map((item) => { if (item.timesheet !== undefined) return item.timesheet }))];
 			timesheet_list = timesheet_list.filter(item => item !== undefined);
@@ -35,7 +36,6 @@ frappe.ui.form.on('Time Tracker', {
 			let without_timesheet = [];
 			with_timesheet = details_data.filter(item => item.timesheet !== undefined);
 			without_timesheet = details_data.filter(item => item.timesheet === undefined);
-
 			// organise data for timesheet entry
 			let amend_timesheet = [];
 			let new_timesheet = [];
@@ -280,43 +280,43 @@ frappe.ui.form.on('Time Tracker Detail', {
 	day_1: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_1");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_2");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_3");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_4");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_5");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_6");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_7");
-		row.total = (parseInt(row.day_1) + parseInt(row.day_2) + parseInt(row.day_3) + parseInt(row.day_4) + parseInt(row.day_5) + parseInt(row.day_6) + parseInt(row.day_7));
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	}
 });

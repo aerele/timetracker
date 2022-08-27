@@ -37,7 +37,7 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 										e.user_id = %s and
 										tsd.from_time between %s and %s and
 										ts.parent_project in %s
-								""",(user[0], from_date, to_date, projects), as_dict=1)
+								""", (user[0], from_date, to_date, projects), as_dict=1)
 	for i in task_list:
 		task_name_list.append(i.name)
 
@@ -53,7 +53,7 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 									status != 'Completed' and
 									_liked_by like %s and
 									name not in %s
-								""", (projects, usr,task_name_list), as_dict=1)
+								""", (projects, usr, task_name_list), as_dict=1)
 	else:
 		task_list += frappe.db.sql("""select 
 								name, subject, project 
@@ -64,27 +64,43 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 								status != 'Completed' and
 								status!= 'Cancelled' and
 								name not in %s
-							""", (projects,task_name_list), as_dict=True)
+							""", (projects, task_name_list), as_dict=True)
 	return task_list
+
 
 @frappe.whitelist()
 def generate_timesheet(new_timesheet, amend_timesheet, user):
+	settings = frappe.get_single("Projects Settings")
+	initial_setting = settings.ignore_employee_time_overlap
+	settings.ignore_employee_time_overlap = 1
+	settings.save()
 	new_timesheet = json.loads(new_timesheet)
 	amend_timesheet = json.loads(amend_timesheet)
 	for i in new_timesheet:
 		generate_new_timesheet(i, user)
 	for i in amend_timesheet:
 		edit_timesheet(i)
+	settings.ignore_employee_time_overlap = initial_setting
+	settings.save()
 	return 1
 
 # whitelist function to submit the list of timesheet
+
+
 @frappe.whitelist()
 def submit_timesheet(timesheet_list):
+	settings = frappe.get_single("Projects Settings")
+	initial_setting = settings.ignore_employee_time_overlap
+	settings.ignore_employee_time_overlap = 1
+	settings.save()
 	timesheet_list = json.loads(timesheet_list)
 	for i in timesheet_list:
 		timesheet = frappe.get_doc("Timesheet", i)
 		timesheet.submit()
+	settings.ignore_employee_time_overlap = initial_setting
+	settings.save()
 	return 1
+
 
 def generate_new_timesheet(new_timesheet, user):
 	# get name from employee doctype where user_id = user
@@ -103,8 +119,11 @@ def generate_new_timesheet(new_timesheet, user):
 		row.task = i["task"]
 	timesheet.save(ignore_permissions=True)
 
+
 def edit_timesheet(amend_timesheet):
 	timesheet = frappe.get_doc("Timesheet", amend_timesheet["timesheet"])
+	old_time_logs = timesheet.time_logs
+	edited_time_logs = []
 	for new in amend_timesheet["data"]:
 		flag = True
 		for old in timesheet.time_logs:
@@ -112,11 +131,22 @@ def edit_timesheet(amend_timesheet):
 			if new["task"] == old.task and from_time == new["date"]:
 				flag = False
 				old.hours = new["duration"]/3600
+				edited_time_logs.append(old.name)
 		if flag:
-			row = timesheet.append("time_logs", {})
-			row.activity_type = "Execution"
-			row.from_time = datetime.datetime.strptime(new["date"], '%Y-%m-%d')
-			row.hours = new["duration"]/3600
-			row.project = amend_timesheet["project"]
-			row.task = new["task"]
+			timesheet.append("time_logs",
+								{
+									"activity_type": "Execution",
+									"from_time": datetime.datetime.strptime(new["date"], '%Y-%m-%d'),
+									"hours": new["duration"]/3600,
+									"project": amend_timesheet["project"],
+									"task": new["task"]
+								},
+							)
+	# for i in old_time_logs:
+	# 	if (i.name not in edited_time_logs):
+	# 		timesheet.remove(i)
+	# counter = 1
+	# for i in timesheet.time_logs:
+	# 	i.idx = counter
+	# 	counter += 1
 	timesheet.save(ignore_permissions=True)
