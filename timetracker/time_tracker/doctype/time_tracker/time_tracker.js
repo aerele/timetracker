@@ -326,7 +326,13 @@ const compute_total = function (frm, day) {
 	for (let i = 0; i < frm.doc.details.length; i++)
 		total += parseInt(frm.doc.details[i][day]);
 	frm.doc.totals[0][day] = total;
-	frm.doc.totals[0]["total"] = parseInt(frm.doc.totals[0]["day_1"]) + parseInt(frm.doc.totals[0]["day_2"]) + parseInt(frm.doc.totals[0]["day_3"]) + parseInt(frm.doc.totals[0]["day_4"]) + parseInt(frm.doc.totals[0]["day_5"]) + parseInt(frm.doc.totals[0]["day_6"]) + parseInt(frm.doc.totals[0]["day_7"]);
+	frm.doc.totals[0]["total"] = 	parseInt(frm.doc.totals[0]["day_1"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_2"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_3"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_4"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_5"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_6"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_7"] || "0");
 	frm.refresh_fields();
 }
 

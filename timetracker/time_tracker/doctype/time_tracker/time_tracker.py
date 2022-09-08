@@ -55,6 +55,7 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 									name not in %s
 								""", (projects, usr, task_name_list), as_dict=1)
 	else:
+		usr = "%"+user[0]+"%"
 		task_list += frappe.db.sql("""select 
 								name, subject, project 
 							from 
@@ -63,8 +64,9 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 								project in %s and 
 								status != 'Completed' and
 								status!= 'Cancelled' and
-								name not in %s
-							""", (projects, task_name_list), as_dict=True)
+								name not in %s and
+								_assign like %s
+							""", (projects, task_name_list, usr), as_dict=True)
 	return task_list
 
 
