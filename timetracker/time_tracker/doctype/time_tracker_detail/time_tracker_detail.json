@@ -11,6 +11,7 @@
   "column_break_3",
   "timesheet",
   "task_name",
+  "submitted",
   "section_break_5",
   "day_1",
   "day_2",
@@ -28,7 +29,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Task",
-   "options": "Task"
+   "options": "Task",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -37,7 +39,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Mon"
+   "label": "Mon",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -47,7 +50,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Tue"
+   "label": "Tue",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -57,7 +61,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Wed"
+   "label": "Wed",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -67,7 +72,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Thu"
+   "label": "Thu",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -77,7 +83,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Fri"
+   "label": "Fri",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -87,7 +94,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Sat"
+   "label": "Sat",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -97,7 +105,8 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
-   "label": "Sun"
+   "label": "Sun",
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "columns": 1,
@@ -107,7 +116,8 @@
    "hide_seconds": 1,
    "in_list_view": 1,
    "label": "Total",
-   "read_only": 1
+   "read_only": 1,
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "fetch_from": "task.subject",
@@ -121,7 +131,8 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "Project",
-   "read_only": 1
+   "read_only": 1,
+   "read_only_depends_on": "eval: doc.submitted;"
   },
   {
    "fieldname": "column_break_3",
@@ -137,12 +148,19 @@
    "label": "Timesheet",
    "options": "Timesheet",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "submitted",
+   "fieldtype": "Check",
+   "label": "Submitted",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-04 15:38:59.886974",
+ "modified": "2022-09-08 23:22:54.754773",
  "modified_by": "Administrator",
  "module": "Time Tracker",
  "name": "Time Tracker Detail",

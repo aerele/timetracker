@@ -17,7 +17,32 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 	user = json.loads(user)
 	task_list = []
 	task_name_list = ["zzz"]
+	#submitted tasks in timesheet
 	task_list = frappe.db.sql("""
+									select
+										tsd.task as name,
+										tsd.from_time as date,
+										ts.parent_project as project,
+										tsd.hours as duration,
+										tsd.name as tsd_name,
+										ts.name as ts_name,
+										ts.docstatus as submitted
+									from
+										`tabTimesheet` as ts 
+									
+									inner join `tabTimesheet Detail` as tsd on ts.name = tsd.parent
+									inner join `tabTask` as t on tsd.task = t.name
+									inner join `tabEmployee` as e on ts.employee = e.name
+
+									where
+										ts.docstatus = 1 and
+										e.user_id = %s and
+										tsd.from_time between %s and %s and
+										ts.parent_project in %s
+								""", (user[0], from_date, to_date, projects), as_dict=1)
+	frappe.errprint(task_list)
+	#saved tasks in timesheet
+	task_list += frappe.db.sql("""
 									select
 										tsd.task as name,
 										tsd.from_time as date,
@@ -41,6 +66,7 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 	for i in task_list:
 		task_name_list.append(i.name)
 
+	#remaining tasks with respect to the selected options
 	if favourite == "1":
 		usr = "%"+user[0]+"%"
 		task_list += frappe.db.sql("""select 

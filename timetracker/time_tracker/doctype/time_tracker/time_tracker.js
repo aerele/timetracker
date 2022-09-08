@@ -31,7 +31,7 @@ frappe.ui.form.on('Time Tracker', {
 
 			//seperate details from timesheet entry and new entry
 			let details_data = frm.doc.details;
-			details_data = details_data.filter(item => (item.total && item.total !== "0"));
+			details_data = details_data.filter(item => (item.total && item.total !== "0" && item.submitted !== 1));
 			let with_timesheet = [];
 			let without_timesheet = [];
 			with_timesheet = details_data.filter(item => item.timesheet !== undefined);
@@ -121,7 +121,7 @@ frappe.ui.form.on('Time Tracker', {
 
 		//submit button
 		frm.add_custom_button(__('Submit Timesheets'), function () {
-			let timesheet_list = [...new Set(frm.doc.details.map((item) => { if (item.timesheet !== undefined) return item.timesheet }))];
+			let timesheet_list = [...new Set(frm.doc.details.map((item) => { if (item.timesheet !== undefined && item.submitted !== 1) return item.timesheet }))];
 			timesheet_list = timesheet_list.filter(item => item !== undefined);
 			if (timesheet_list.length > 0) {
 				let message = "Confirm submitting the following timesheets: ";
@@ -246,6 +246,7 @@ frappe.ui.form.on('Time Tracker', {
 							task.timesheet = r.message[j].ts_name;
 							if (r.message[j].date) {
 								let day_number = dates.indexOf((r.message[j].date).split(" ")[0]) + 1;
+								task.submitted = r.message[j].submitted ? 1 : 0;
 								task[`day_${day_number}`] = r.message[j].duration * 3600;
 								frm.script_manager.trigger(`day_${day_number}`, task.doctype, task.name);
 							}
@@ -341,7 +342,9 @@ const set_task_filter = (frm) => {
 	let projects = []
 	let tasks = []
 	for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
-	for (let i = 0; i < frm.doc.details.length; i++) { tasks.push(frm.doc.details[i].task) }
+	for (let i = 0; i < frm.doc.details.length; i++) { 
+		if(frm.doc.details[i]["submitted"] !== 1) tasks.push(frm.doc.details[i].task) 
+	}
 	frm.set_query("task", "details", function (doc, cdt, cdn) {
 		return {
 			filters: {
