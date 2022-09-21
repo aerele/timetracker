@@ -5,6 +5,7 @@
 frappe.ui.form.on('Time Tracker', {
 
 	refresh: function (frm) {
+		frm.doc.totals[0].day_wise_total = "Date Wise Total"
 		frm.page.set_indicator(__(""), "")
 		if(frappe.user.name !== "Administrator"){
 			frm.set_value("user", frappe.user.name)
@@ -254,6 +255,12 @@ frappe.ui.form.on('Time Tracker', {
 							frm.refresh_fields();
 						}
 					}
+					//handling day 1 (monday)	
+					for(let i = 0; i < frm.doc.details.length; i++){
+						if(!frm.doc.details[i].day_1){
+							frm.doc.details[i].day_1 = "0"
+						}
+					}
 					set_task_filter(frm);
 				}
 			});
@@ -272,7 +279,9 @@ frappe.ui.form.on('Time Tracker Detail', {
 		set_task_filter(frm);
 	},
 
-	details_add: function (frm) {
+	details_add: function (frm,cdt,cdn) {
+		let row = locals[cdt][cdn];
+		row.day_1 = "0";
 		set_task_filter(frm);
 	},
 
@@ -285,50 +294,42 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.dirty();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		frm.page.set_indicator(__("Not Saved"), "orange")
 	}
 });
 
@@ -344,6 +345,7 @@ const compute_total = function (frm, day) {
 									parseInt(frm.doc.totals[0]["day_5"] || "0") + 
 									parseInt(frm.doc.totals[0]["day_6"] || "0") + 
 									parseInt(frm.doc.totals[0]["day_7"] || "0");
+	frm.page.set_indicator(__("Not Saved"), "orange")
 	frm.refresh_fields();
 }
 
