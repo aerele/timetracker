@@ -5,6 +5,7 @@
 frappe.ui.form.on('Time Tracker', {
 
 	refresh: function (frm) {
+		frm.page.set_indicator(__(""), "")
 		if(frappe.user.name !== "Administrator"){
 			frm.set_value("user", frappe.user.name)
 			frm.set_df_property("user", "read_only", 1);
@@ -259,6 +260,7 @@ frappe.ui.form.on('Time Tracker', {
 		}
 		frm.refresh_fields();
 		set_task_filter(frm);
+		frm.page.set_indicator(__(""), "")
 	},
 
 
@@ -283,42 +285,50 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.dirty();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		frm.page.set_indicator(__("Not Saved"), "orange")
 	}
 });
 
