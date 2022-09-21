@@ -5,7 +5,6 @@
 frappe.ui.form.on('Time Tracker', {
 
 	refresh: function (frm) {
-		frm.doc.totals[0].day_wise_total = "Date Wise Total"
 		frm.page.set_indicator(__(""), "")
 		if(frappe.user.name !== "Administrator"){
 			frm.set_value("user", frappe.user.name)
@@ -334,6 +333,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 });
 
 const compute_total = function (frm, day) {
+	frm.doc.totals[0].day_wise_total = "Date Wise Total"
 	let total = 0;
 	for (let i = 0; i < frm.doc.details.length; i++)
 		total += parseInt(frm.doc.details[i][day]);
