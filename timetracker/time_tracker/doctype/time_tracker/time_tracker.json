@@ -1,4 +1,6 @@
 {
+ "_comments": "[]",
+ "_liked_by": "[]",
  "actions": [],
  "allow_rename": 1,
  "creation": "2022-08-09 12:18:10.168691",
@@ -9,14 +11,15 @@
  "field_order": [
   "project",
   "column_break_8",
-  "teammates",
-  "column_break_3",
+  "user",
+  "favourite",
+  "column_break_6",
   "from",
-  "column_break_2",
   "to",
   "section_break_7",
   "details",
-  "totals"
+  "totals",
+  "tasks"
  ],
  "fields": [
   {
@@ -26,28 +29,15 @@
    "options": "Time Tracker Project"
   },
   {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "teammates",
-   "fieldtype": "Table MultiSelect",
-   "label": "Teammate(s)",
-   "options": "Time Tracker Teammate"
-  },
-  {
    "fieldname": "from",
    "fieldtype": "Date",
-   "label": "From"
+   "label": "Select Week"
   },
   {
    "fieldname": "to",
-   "fieldtype": "Data",
-   "label": "To"
+   "fieldtype": "Date",
+   "label": "To",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_7",
@@ -62,20 +52,42 @@
   {
    "fieldname": "totals",
    "fieldtype": "Table",
-   "label": "Totals",
    "options": "Time Tracker Total",
    "read_only": 1
   },
   {
    "fieldname": "column_break_8",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "favourite",
+   "fieldtype": "Check",
+   "label": "User's Favourite Tasks"
+  },
+  {
+   "fieldname": "tasks",
+   "fieldtype": "Table MultiSelect",
+   "hidden": 1,
+   "label": "Tasks",
+   "options": "Time Tracker Task List"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-08-09 12:35:57.403151",
+ "modified": "2022-08-19 16:09:09.220202",
  "modified_by": "Administrator",
  "module": "Time Tracker",
  "name": "Time Tracker",
