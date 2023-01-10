@@ -172,17 +172,19 @@ frappe.ui.form.on('Time Tracker', {
 	user: function (frm) {
 		let projects = []
 		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
-		if (projects.length !== 0 && frm.doc.from) { frm.trigger("from"); }
+		if (frm.doc.from) { frm.trigger("from"); }
+		
 	},
 
 	favourite: function (frm) {
 		let projects = []
 		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
-		if (projects.length !== 0 && frm.doc.from && frm.doc.user) { frm.trigger("from"); }
+		if (frm.doc.from && frm.doc.user) { frm.trigger("from"); }
+		
 	},
 
 	from: function (frm) {
-		if (frm.doc.project.length === 0) { frappe.throw(__("Please select atleast one project")); }
+		// if (frm.doc.project.length === 0) { frappe.throw(__("Please select atleast one project")); }
 		let from_date = new Date(frm.doc.from);
 		let day_no = from_date.getDay();
 		if (day_no !== 1) { frm.set_value("from", frappe.datetime.add_days(frm.doc.from, -1 * (day_no - 1))); }

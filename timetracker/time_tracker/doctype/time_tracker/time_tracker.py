@@ -12,12 +12,41 @@ class TimeTracker(Document):
 
 
 @frappe.whitelist()
-def get_tasks(projects, favourite, user, from_date, to_date):
+def get_tasks(projects,favourite, user, from_date, to_date):
+	print("user")
+	print(user)
 	projects = json.loads(projects)
 	user = json.loads(user)
 	task_list = []
 	task_name_list = ["zzz"]
+	filters = ""
+	if len(projects)>0:
+		projects = tuple(projects)
+		filters += "and ts.parent_project in ('{0}') ".format("', '".join(projects))
+	if not user[0]:
+		user = [id[0] for id in frappe.db.get_list("Employee",{"status":"Active"},"user_id",as_list = 1)]
 	#submitted tasks in timesheet
+	user_filter = "and e.user_id in ('{0}') ".format("', '".join(user))
+	print("""
+									select
+										tsd.task as name,
+										tsd.from_time as date,
+										ts.parent_project as project,
+										tsd.hours as duration,
+										tsd.name as tsd_name,
+										ts.name as ts_name,
+										ts.docstatus as submitted
+									from
+										`tabTimesheet` as ts 
+									
+									inner join `tabTimesheet Detail` as tsd on ts.name = tsd.parent
+									inner join `tabTask` as t on tsd.task = t.name
+									inner join `tabEmployee` as e on ts.employee = e.name
+
+									where
+										ts.docstatus = 1 and
+										tsd.from_time between %s and %s {0} {1}
+								""".format(filters,user_filter),(from_date,to_date))
 	task_list = frappe.db.sql("""
 									select
 										tsd.task as name,
@@ -36,11 +65,10 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 
 									where
 										ts.docstatus = 1 and
-										e.user_id = %s and
-										tsd.from_time between %s and %s and
-										ts.parent_project in %s
-								""", (user[0], from_date, to_date, projects), as_dict=1)
-	frappe.errprint(task_list)
+										tsd.from_time between %s and %s {0} {1}
+								""".format(filters,user_filter),(from_date,to_date), as_dict=1)
+	print(task_list)
+	
 	#saved tasks in timesheet
 	task_list += frappe.db.sql("""
 									select
@@ -60,13 +88,15 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 									where
 										ts.docstatus = 0 and
 										e.user_id = %s and
-										tsd.from_time between %s and %s and
-										ts.parent_project in %s
-								""", (user[0], from_date, to_date, projects), as_dict=1)
+										tsd.from_time between %s and %s {0}
+								""".format(filters),(user[0], from_date, to_date), as_dict=1)
 	for i in task_list:
 		task_name_list.append(i.name)
 
 	#remaining tasks with respect to the selected options
+	project_filter = ""
+	if len(projects) > 0:
+		project_filter += "and project in  ('{0}') ".format("', '".join(projects))
 	if favourite == "1":
 		usr = "%"+user[0]+"%"
 		task_list += frappe.db.sql("""select 
@@ -74,12 +104,11 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 								from 
 									`tabTask` 
 								where 
-									project in %s and 
 									status!= 'Cancelled' and
 									status != 'Completed' and
 									_liked_by like %s and
-									name not in %s
-								""", (projects, usr, task_name_list), as_dict=1)
+									name not in %s {0}
+								""".format(project_filter), (usr, task_name_list), as_dict=1)
 	else:
 		usr = "%"+user[0]+"%"
 		task_list += frappe.db.sql("""select 
@@ -87,12 +116,11 @@ def get_tasks(projects, favourite, user, from_date, to_date):
 							from 
 								`tabTask` 
 							where 
-								project in %s and 
 								status != 'Completed' and
 								status!= 'Cancelled' and
 								name not in %s and
-								_assign like %s
-							""", (projects, task_name_list, usr), as_dict=True)
+								_assign like %s {0}
+							""".format(project_filter), (task_name_list, usr), as_dict=True)
 	return task_list
 
 
