@@ -1,106 +1,372 @@
 // Copyright (c) 2022, Aerele Technologies and contributors
 // For license information, please see license.txt
 
+
 frappe.ui.form.on('Time Tracker', {
-	onload: function(frm) {
+
+	refresh: function (frm) {
+		frm.page.set_indicator(__(""), "")
+		if(frappe.user.name !== "Administrator"){
+			frm.set_value("user", frappe.user.name)
+			frm.set_df_property("user", "read_only", 1);
+		}
+		frm.fields_dict['totals'].grid.wrapper.find('.btn-open-row').hide();// to hide edit button
+		frm.fields_dict['totals'].grid.wrapper.find('.grid-heading-row').hide();//to hide header row
+		frm.disable_save();
+		frm.fields_dict.details.grid.wrapper.find(".indicator-pill").hide();
+		frm.refresh_fields();
+
+		//Actions for save button
+		frm.add_custom_button(__('Save'), function () {
+			let timesheet_list = [...new Set(frm.doc.details.map((item) => { if (item.timesheet !== undefined) return item.timesheet }))];
+			timesheet_list = timesheet_list.filter(item => item !== undefined);
+
+			//get all dates from timesheet
+			let dates = [];
+			let from_date = new Date(frm.doc.from);
+			let to_date = new Date(frm.doc.to);
+			while (from_date <= to_date) {
+				dates.push(frappe.datetime.get_datetime_as_string(from_date).split(" ")[0]);
+				from_date.setDate(from_date.getDate() + 1);
+			}
+
+			//seperate details from timesheet entry and new entry
+			let details_data = frm.doc.details;
+			details_data = details_data.filter(item => (item.total && item.total !== "0" && item.submitted !== 1));
+			let with_timesheet = [];
+			let without_timesheet = [];
+			with_timesheet = details_data.filter(item => item.timesheet !== undefined);
+			without_timesheet = details_data.filter(item => item.timesheet === undefined);
+			// organise data for timesheet entry
+			let amend_timesheet = [];
+			let new_timesheet = [];
+
+			//for amend timesheet
+			for (let i = 0; i < with_timesheet.length; i++) {
+				let obj = {
+					"timesheet": with_timesheet[i].timesheet,
+					"project": with_timesheet[i].project,
+					"data": []
+				};
+				for (let j = 0; j < dates.length; j++) {
+					let day = `day_${j + 1}`;
+					if (with_timesheet[i][day] && with_timesheet[i][day] !== "0") {
+						obj.data.push({
+							date: dates[j],
+							duration: with_timesheet[i][day],
+							task: with_timesheet[i].task
+						});
+					}
+				}
+				for (let j = 0; j < without_timesheet.length; j++) {
+					if (without_timesheet[j].project === with_timesheet[i].project) {
+						for (let k = 0; k < dates.length; k++) {
+							let day = `day_${k + 1}`;
+							if (without_timesheet[j][day] && without_timesheet[j][day] !== "0") {
+								obj.data.push({
+									date: dates[k],
+									duration: without_timesheet[j][day],
+									task: without_timesheet[j].task
+								});
+							}
+						}
+					}
+				}
+				without_timesheet = without_timesheet.filter(item => item.project !== obj.project);
+				amend_timesheet.push(obj);
+			}
+			//get the remaining projects without timesheet entry
+			let remaining_projects = [...new Set(without_timesheet.map(item => item.project))];
+
+			//for new timesheet
+			for (let i = 0; i < remaining_projects.length; i++) {
+				let obj = {
+					"project": remaining_projects[i],
+					"data": []
+				};
+				for (let j = 0; j < without_timesheet.length; j++) {
+					if (remaining_projects[i] === without_timesheet[j].project) {
+						for (let k = 0; k < dates.length; k++) {
+							let day = `day_${k + 1}`;
+							if (without_timesheet[j][day] && without_timesheet[j][day] !== "0") {
+								obj.data.push({
+									date: dates[k],
+									duration: without_timesheet[j][day],
+									task: without_timesheet[j].task
+								});
+							}
+						}
+					}
+				}
+				new_timesheet.push(obj);
+			}
+			//call the function generate_timesheet from backend
+			frappe.call({
+				method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.generate_timesheet",
+				args: {
+					"new_timesheet": new_timesheet,
+					"amend_timesheet": amend_timesheet,
+					"user": frm.doc.user
+				},
+				callback: function (r) {
+					if (r.message) {
+						frappe.show_alert({
+							message: __('Timesheets Generated Successfully'),
+							indicator: 'green'
+						});
+						frm.trigger("from");
+					}
+				}
+			});
+		});
+
+		//submit button
+		frm.add_custom_button(__('Submit Timesheets'), function () {
+			let timesheet_list = [...new Set(frm.doc.details.map((item) => { if (item.timesheet !== undefined && item.submitted !== 1) return item.timesheet }))];
+			timesheet_list = timesheet_list.filter(item => item !== undefined);
+			if (timesheet_list.length > 0) {
+				let message = "Confirm submitting the following timesheets: ";
+				for (let i = 0; i < timesheet_list.length ; i++) {
+					message += `${timesheet_list[i]} `;
+				}
+				frappe.confirm(
+					message,
+					function(){
+						//frappe call to submit timesheets
+						frappe.call({
+							method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.submit_timesheet",
+							args: {
+								"timesheet_list": timesheet_list,
+								"user": frm.doc.user
+							},
+							callback: function (r) {
+								if (r.message) {
+									frappe.show_alert({
+										message: __('Timesheets Submitted Successfully'),
+										indicator: 'green'
+									});
+									frm.trigger("from");
+								}
+							}
+						});
+					},
+					function(){
+						window.close();
+					}
+				)
+			}
+		});
+	},
+
+	onload: function (frm) {
 		frm.clear_table("totals");
 		frm.add_child("totals");
 	},
-	project: function(frm) {
-		frm.set_query("task", "details", function(doc, cdt, cdn) {
-			let projects = []
-			let mates = []
-			for (let i = 0; i < frm.doc.project.length; i++) {
-				projects.push(frm.doc.project[i].project)
-			}
-			for (let j = 0; j < frm.doc.teammates.length; j++) {
-				mates.push(frm.doc.teammates[j].user)
-			}
-			console.log(projects)
-			console.log(mates)
 
-			return {
-				filters: {
-					project: ["in", projects],
-					assignee: ["in", mates]
-				}
-			};
-		});
+	project: function (frm) {
+		let projects = []
+		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+		if (projects.length !== 0 && frm.doc.from) { frm.trigger("from"); }
 	},
-	teammates: function(frm) {
-		frm.set_query("task", "details", function(doc, cdt, cdn) {
-			let projects = []
-			let mates = []
-			for (let i = 0; i < frm.doc.project.length; i++) {
-				projects.push(frm.doc.project[i].project)
-			}
-			for (let j = 0; j < frm.doc.teammates.length; j++) {
-				mates.push(frm.doc.teammates[j].user)
-			}
-			console.log(projects)
-			console.log(mates)
 
-			return {
-				filters: {
-					project: ["in", projects],
-					assignee: ["in", mates]
-				}
-			};
-		});
+	user: function (frm) {
+		let projects = []
+		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+		if (frm.doc.from) { frm.trigger("from"); }
+		
 	},
-	from: function(frm) {
+
+	favourite: function (frm) {
+		let projects = []
+		for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+		if (frm.doc.from && frm.doc.user) { frm.trigger("from"); }
+		
+	},
+
+	from: function (frm) {
+		// if (frm.doc.project.length === 0) { frappe.throw(__("Please select atleast one project")); }
+		let from_date = new Date(frm.doc.from);
+		let day_no = from_date.getDay();
+		if (day_no !== 1) { frm.set_value("from", frappe.datetime.add_days(frm.doc.from, -1 * (day_no - 1))); }
 		frm.set_value("to", frappe.datetime.add_days(frm.doc.from, 6));
 		frm.refresh_fields();
 
-		var day_1 = frappe.meta.get_docfield("Time Tracker Detail","day_1", frm.doc.name);
-		day_1.label = "Mon (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 0)).split("-")[2].split(" ")[0] + ")";
-		var day_2 = frappe.meta.get_docfield("Time Tracker Detail","day_2", frm.doc.name);
-		day_2.label = "Tue (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 1)).split("-")[2].split(" ")[0] + ")";
-		var day_3 = frappe.meta.get_docfield("Time Tracker Detail","day_3", frm.doc.name);
-		day_3.label = "Wed (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 2)).split("-")[2].split(" ")[0] + ")";
-		var day_4 = frappe.meta.get_docfield("Time Tracker Detail","day_4", frm.doc.name);
-		day_4.label = "Thu (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 3)).split("-")[2].split(" ")[0] + ")";
-		var day_5 = frappe.meta.get_docfield("Time Tracker Detail","day_5", frm.doc.name);
-		day_5.label = "Fri (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 4)).split("-")[2].split(" ")[0] + ")";
-		var day_6 = frappe.meta.get_docfield("Time Tracker Detail","day_6", frm.doc.name);
-		day_6.label = "Sat (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 5)).split("-")[2].split(" ")[0] + ")";
-		var day_7 = frappe.meta.get_docfield("Time Tracker Detail","day_7", frm.doc.name);
-		day_7.label = "Sun (" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, 6)).split("-")[2].split(" ")[0] + ")";
+		//change the lables of details table columns
+		let fields_list = ["day_1", "day_2", "day_3", "day_4", "day_5", "day_6", "day_7"];
+		let week_days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+		for (let i = 0; i < fields_list.length; i++) {
+			let date = new Date(frappe.datetime.add_days(frm.doc.from, i));
+			let day_of_the_week = date.getDay();
+			var day = frappe.meta.get_docfield("Time Tracker Detail", fields_list[i], frm.doc.name);
+			day.label = week_days[day_of_the_week] + "(" + frappe.datetime.get_datetime_as_string(frappe.datetime.add_days(frm.doc.from, i)).split("-")[2].split(" ")[0] + ")";
+		}
 
+		if (day_no === 1) {
+			let mates = [frm.doc.user]
+			let projects = []
+			for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+			let dates = [];
+			let from_date = new Date(frm.doc.from);
+			let to_date = new Date(frm.doc.to);
+			while (from_date <= to_date) {
+				dates.push(frappe.datetime.get_datetime_as_string(from_date).split(" ")[0]);
+				from_date.setDate(from_date.getDate() + 1);
+			}
+
+			frappe.call({
+				method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.get_tasks",
+				args: {
+					projects: projects,
+					favourite: frm.doc.favourite,
+					user: mates,
+					from_date: frm.doc.from,
+					to_date: frm.doc.to
+				},
+				callback: function (r) {
+					frm.clear_table("details");
+					frm.clear_table("totals");
+					frm.clear_table("tasks");
+					frm.add_child("totals");
+					for (let j = 0; j < r.message.length; j++) {
+						let flag = true;
+						if (r.message[j].date) {
+							for (let i = 0; i < frm.doc.details.length; i++) {
+								if (frm.doc.details[i].task === r.message[j].name && frm.doc.details[i].timesheet === r.message[j].ts_name) {
+									flag = false;
+									let day_number = dates.indexOf((r.message[j].date).split(" ")[0]) + 1;
+									frm.doc.details[i][`day_${day_number}`] = r.message[j].duration * 3600;
+									frm.script_manager.trigger(`day_${day_number}`, frm.doc.details[i].doctype, frm.doc.details[i].name);
+									frm.refresh_fields();
+									break;
+								}
+							}
+						}
+						if (flag) {
+							let task = frm.add_child("details");
+							task.task = r.message[j].name;
+							task.task_name = r.message[j].subject;
+							task.project = r.message[j].project;
+							task.timesheet = r.message[j].ts_name;
+							if (r.message[j].date) {
+								let day_number = dates.indexOf((r.message[j].date).split(" ")[0]) + 1;
+								task.submitted = r.message[j].submitted ? 1 : 0;
+								task[`day_${day_number}`] = r.message[j].duration * 3600;
+								frm.script_manager.trigger(`day_${day_number}`, task.doctype, task.name);
+							}
+							frm.refresh_fields();
+						}
+					}
+					//handling day 1 (monday)	
+					for(let i = 0; i < frm.doc.details.length; i++){
+						if(!frm.doc.details[i].day_1){
+							frm.doc.details[i].day_1 = "0"
+						}
+					}
+					set_task_filter(frm);
+				}
+			});
+		}
 		frm.refresh_fields();
-	}
+		set_task_filter(frm);
+		frm.page.set_indicator(__(""), "")
+	},
+
+
 });
+
 
 frappe.ui.form.on('Time Tracker Detail', {
-	day_2: function(frm, cdt, cdn) {
+	details_remove: function (frm) {
+		set_task_filter(frm);
+	},
+
+	details_add: function (frm,cdt,cdn) {
 		let row = locals[cdt][cdn];
-		row.total = row.day_2 + row.day_3 + row.day_4 + row.day_5 + row.day_6 + row.day_7;
+		row.day_1 = "0";
+		set_task_filter(frm);
+	},
+
+	task: function (frm) {
+		set_task_filter(frm);
+	},
+
+	day_1: function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn];
+		compute_total(frm, "day_1");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
-	day_3: function(frm, cdt, cdn) {
+	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.total = row.day_2 + row.day_3 + row.day_4 + row.day_5 + row.day_6 + row.day_7;
+		compute_total(frm, "day_2");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
-	day_4: function(frm, cdt, cdn) {
+	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.total = row.day_2 + row.day_3 + row.day_4 + row.day_5 + row.day_6 + row.day_7;
+		compute_total(frm, "day_3");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
-	day_5: function(frm, cdt, cdn) {
+	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.total = row.day_2 + row.day_3 + row.day_4 + row.day_5 + row.day_6 + row.day_7;
+		compute_total(frm, "day_4");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
-	day_6: function(frm, cdt, cdn) {
+	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.total = row.day_2 + row.day_3 + row.day_4 + row.day_5 + row.day_6 + row.day_7;
+		compute_total(frm, "day_5");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	},
-	day_7: function(frm, cdt, cdn) {
+	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.total = row.day_2 + row.day_3 + row.day_4 + row.day_5 + row.day_6 + row.day_7;
+		compute_total(frm, "day_6");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+		frm.refresh_fields();
+	},
+	day_7: function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn];
+		compute_total(frm, "day_7");
+		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 	}
-	
 });
+
+const compute_total = function (frm, day) {
+	frm.doc.totals[0].day_wise_total = "Date Wise Total"
+	let total = 0;
+	for (let i = 0; i < frm.doc.details.length; i++)
+		total += parseInt(frm.doc.details[i][day]);
+	frm.doc.totals[0][day] = total;
+	frm.doc.totals[0]["total"] = 	parseInt(frm.doc.totals[0]["day_1"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_2"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_3"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_4"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_5"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_6"] || "0") + 
+									parseInt(frm.doc.totals[0]["day_7"] || "0");
+	frm.page.set_indicator(__("Not Saved"), "orange")
+	frm.refresh_fields();
+}
+
+
+const set_task_filter = (frm) => {
+	let projects = []
+	let tasks = []
+	for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
+	for (let i = 0; i < frm.doc.details.length; i++) { 
+		if(frm.doc.details[i]["submitted"] !== 1) tasks.push(frm.doc.details[i].task) 
+	}
+	frm.set_query("task", "details", function (doc, cdt, cdn) {
+		return {
+			filters: {
+				project: ["in", projects],
+				name:["not in", tasks]
+			}
+		};
+	});
+	frm.refresh_fields();
+}
+
