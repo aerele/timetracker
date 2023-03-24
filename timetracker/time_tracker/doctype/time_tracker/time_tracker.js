@@ -369,4 +369,3 @@ const set_task_filter = (frm) => {
 	});
 	frm.refresh_fields();
 }
-
