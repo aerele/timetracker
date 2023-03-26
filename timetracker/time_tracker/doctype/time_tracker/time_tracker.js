@@ -3,7 +3,102 @@
 
 
 frappe.ui.form.on('Time Tracker', {
+	refresh:function(frm) {
+	    
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+	},
+	onload_post_render:function(frm) {
+	    
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+	},
+	details_on_form_rendered:function(frm){
+	    document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+	},
+	form_render:function(frm,cdt,cdn){
+            
+	    document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
 
+            $(".icon.icon-sm").remove()
+        }
+	
+})
+
+// frappe.ui.form.on('Time Tracker Detail', {
+   
+//       details_add:function(frm,cdt,cdn){
+          
+//         // $(".icon.icon-sm")[0].outerHTML = '<svg class="icon  icon-sm" style="filter: opacity(0.5);display:none;">\n\t\t\t<use class="" href="#icon-setting-gear"></use>\n\t\t</svg>'
+//         	    document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+//                 var n = frm.doc.test.length;
+
+//         } ,
+// 		project:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.project){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		task:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.task){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_1:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_1){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_2:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_2){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_3:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_3){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_4:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_4){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_5:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_5){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_6:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_6){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+// 		day_7:function(frm,cdt,cdn){
+// 			var row = locals[cdt][cdn]
+// 			if(row.day_7){
+// 				document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
+// 			}
+// 		},
+        
+// })
+frappe.ui.form.on('Time Tracker', {
+	
 	refresh: function (frm) {
 		frm.page.set_indicator(__(""), "")
 		if(frappe.user.name !== "Administrator"){
@@ -278,16 +373,22 @@ frappe.ui.form.on('Time Tracker', {
 frappe.ui.form.on('Time Tracker Detail', {
 	details_remove: function (frm) {
 		set_task_filter(frm);
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 
 	details_add: function (frm,cdt,cdn) {
 		let row = locals[cdt][cdn];
 		row.day_1 = "0";
 		set_task_filter(frm);
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 
 	task: function (frm) {
 		set_task_filter(frm);
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 
 	day_1: function (frm, cdt, cdn) {
@@ -295,42 +396,56 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	}
 });
 

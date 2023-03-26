@@ -96,7 +96,7 @@
    "fieldtype": "Duration",
    "hide_days": 1,
    "hide_seconds": 1,
-   "in_list_view": 1,
+   "in_list_view": 0,
    "label": "Day 7",
    "length": 1,
    "read_only": 1
