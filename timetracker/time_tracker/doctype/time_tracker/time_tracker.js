@@ -5,20 +5,20 @@
 frappe.ui.form.on('Time Tracker', {
 	refresh:function(frm) {
 	    
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 	},
 	onload_post_render:function(frm) {
 	    
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 	},
 	details_on_form_rendered:function(frm){
-	    document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 	},
 	form_render:function(frm,cdt,cdn){
             
-	    document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
-            $(".icon.icon-sm").remove()
+           
         }
 	
 })
@@ -105,6 +105,7 @@ frappe.ui.form.on('Time Tracker', {
 			frm.set_value("user", frappe.user.name)
 			frm.set_df_property("user", "read_only", 1);
 		}
+		// frm.fields_dict.details.grid.grid_buttons.addClass('hidden');
 		frm.fields_dict['totals'].grid.wrapper.find('.btn-open-row').hide();// to hide edit button
 		frm.fields_dict['totals'].grid.wrapper.find('.grid-heading-row').hide();//to hide header row
 		frm.disable_save();
@@ -196,6 +197,9 @@ frappe.ui.form.on('Time Tracker', {
 				new_timesheet.push(obj);
 			}
 			//call the function generate_timesheet from backend
+			if(!frm.doc.user){
+				frappe.throw("Please Select user to save")
+			}
 			frappe.call({
 				method: "timetracker.time_tracker.doctype.time_tracker.time_tracker.generate_timesheet",
 				args: {
@@ -254,6 +258,7 @@ frappe.ui.form.on('Time Tracker', {
 	},
 
 	onload: function (frm) {
+		$(".icon.icon-sm").hide()
 		frm.clear_table("totals");
 		frm.add_child("totals");
 	},
@@ -280,6 +285,7 @@ frappe.ui.form.on('Time Tracker', {
 
 	from: function (frm) {
 		// if (frm.doc.project.length === 0) { frappe.throw(__("Please select atleast one project")); }
+		$(".icon.icon-sm").hide()
 		let from_date = new Date(frm.doc.from);
 		let day_no = from_date.getDay();
 		if (day_no !== 1) { frm.set_value("from", frappe.datetime.add_days(frm.doc.from, -1 * (day_no - 1))); }
@@ -364,6 +370,8 @@ frappe.ui.form.on('Time Tracker', {
 		frm.refresh_fields();
 		set_task_filter(frm);
 		frm.page.set_indicator(__(""), "")
+		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+
 	},
 
 
@@ -371,9 +379,13 @@ frappe.ui.form.on('Time Tracker', {
 
 
 frappe.ui.form.on('Time Tracker Detail', {
+	details_move:function(frm){
+		$(".icon.icon-sm").hide()
+
+	},
 	details_remove: function (frm) {
 		set_task_filter(frm);
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 
@@ -381,13 +393,13 @@ frappe.ui.form.on('Time Tracker Detail', {
 		let row = locals[cdt][cdn];
 		row.day_1 = "0";
 		set_task_filter(frm);
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 
 	task: function (frm) {
 		set_task_filter(frm);
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 
@@ -396,7 +408,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 	day_2: function (frm, cdt, cdn) {
@@ -404,7 +416,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 	day_3: function (frm, cdt, cdn) {
@@ -412,7 +424,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 	day_4: function (frm, cdt, cdn) {
@@ -420,7 +432,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 	day_5: function (frm, cdt, cdn) {
@@ -428,7 +440,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 	day_6: function (frm, cdt, cdn) {
@@ -436,7 +448,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	},
 	day_7: function (frm, cdt, cdn) {
@@ -444,7 +456,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
+		$(".icon.icon-sm").hide()
 
 	}
 });
@@ -478,7 +490,8 @@ const set_task_filter = (frm) => {
 		return {
 			filters: {
 				project: ["in", projects],
-				name:["not in", tasks]
+				name:["not in", tasks],
+				is_group:1
 			}
 		};
 	});

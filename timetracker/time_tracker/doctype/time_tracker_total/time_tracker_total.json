@@ -22,7 +22,6 @@
    "fieldname": "day_wise_total",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "length": 2,
    "read_only": 1
   },
   {
@@ -96,7 +95,6 @@
    "fieldtype": "Duration",
    "hide_days": 1,
    "hide_seconds": 1,
-   "in_list_view": 0,
    "label": "Day 7",
    "length": 1,
    "read_only": 1
@@ -116,12 +114,13 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-04 15:40:55.520064",
+ "modified": "2023-04-07 12:31:20.781590",
  "modified_by": "Administrator",
  "module": "Time Tracker",
  "name": "Time Tracker Total",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }

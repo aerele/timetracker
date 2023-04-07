@@ -13,8 +13,6 @@ class TimeTracker(Document):
 
 @frappe.whitelist()
 def get_tasks(projects,favourite, user, from_date, to_date):
-	print("user")
-	print(user)
 	projects = json.loads(projects)
 	user = json.loads(user)
 	task_list = []
@@ -23,10 +21,14 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 	if len(projects)>0:
 		projects = tuple(projects)
 		filters += "and ts.parent_project in ('{0}') ".format("', '".join(projects))
-	if not user[0]:
+	if len(user)==1 and user[0]=='' or user[0] == None:
+		print("true")
 		user = [id[0] for id in frappe.db.get_list("Employee",{"status":"Active"},"user_id",as_list = 1)]
+	print(user)
 	#submitted tasks in timesheet
 	user_filter = "and e.user_id in ('{0}') ".format("', '".join(user))
+	print("userfiletr")
+	print(user_filter)
 	print("""
 									select
 										tsd.task as name,
@@ -159,6 +161,8 @@ def submit_timesheet(timesheet_list):
 
 
 def generate_new_timesheet(new_timesheet, user):
+	if not "project" in new_timesheet:
+		frappe.throw("No project found")
 	# get name from employee doctype where user_id = user
 	employee = frappe.db.get_value("Employee", {"user_id": user}, "name")
 	company = frappe.db.get_value("Employee", {"user_id": user}, "company")
