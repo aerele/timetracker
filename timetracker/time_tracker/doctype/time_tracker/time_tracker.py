@@ -22,16 +22,14 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		projects = tuple(projects)
 		filters += "and ts.parent_project in ('{0}') ".format("', '".join(projects))
 	if len(user)==1 and user[0]=='' or user[0] == None:
-		print("true")
 		user = [id[0] for id in frappe.db.get_list("Employee",{"status":"Active"},"user_id",as_list = 1)]
-	print(user)
 	#submitted tasks in timesheet
 	user_filter = "and e.user_id in ('{0}') ".format("', '".join(user))
-	print("userfiletr")
-	print(user_filter)
 	print("""
 									select
 										tsd.task as name,
+										t.subject as subject,
+
 										tsd.from_time as date,
 										ts.parent_project as project,
 										tsd.hours as duration,
@@ -52,6 +50,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 	task_list = frappe.db.sql("""
 									select
 										tsd.task as name,
+										t.subject as subject,
 										tsd.from_time as date,
 										ts.parent_project as project,
 										tsd.hours as duration,
@@ -69,12 +68,14 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 										ts.docstatus = 1 and
 										tsd.from_time between %s and %s {0} {1}
 								""".format(filters,user_filter),(from_date,to_date), as_dict=1)
-	print(task_list)
-	
+	for data in task_list:
+		if "project" in data and data["project"]:
+			data["project_name"] = frappe.db.get_value("Project",data["project"],"project_name")
 	#saved tasks in timesheet
 	task_list += frappe.db.sql("""
 									select
 										tsd.task as name,
+										t.subject as subject,
 										tsd.from_time as date,
 										ts.parent_project as project,
 										tsd.hours as duration,
@@ -93,6 +94,8 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 										tsd.from_time between %s and %s {0}
 								""".format(filters),(user[0], from_date, to_date), as_dict=1)
 	for i in task_list:
+		if "project" in data and data["project"]:
+			data["project_name"] = frappe.db.get_value("Project",data["project"],"project_name")
 		task_name_list.append(i.name)
 
 	#remaining tasks with respect to the selected options
@@ -123,6 +126,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 								name not in %s and
 								_assign like %s {0}
 							""".format(project_filter), (task_name_list, usr), as_dict=True)
+	print(task_list)
 	return task_list
 
 

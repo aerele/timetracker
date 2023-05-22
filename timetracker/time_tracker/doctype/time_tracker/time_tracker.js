@@ -347,6 +347,7 @@ frappe.ui.form.on('Time Tracker', {
 							task.task = r.message[j].name;
 							task.task_name = r.message[j].subject;
 							task.project = r.message[j].project;
+							task.project_name = r.message[j].project_name;
 							task.timesheet = r.message[j].ts_name;
 							if (r.message[j].date) {
 								let day_number = dates.indexOf((r.message[j].date).split(" ")[0]) + 1;
@@ -370,8 +371,7 @@ frappe.ui.form.on('Time Tracker', {
 		frm.refresh_fields();
 		set_task_filter(frm);
 		frm.page.set_indicator(__(""), "")
-		document.querySelector("#page-Time\\ Tracker > div.container.page-body > div.page-wrapper > div > div.row.layout-main > div > div.layout-main-section > div:nth-child(2) > div > div > div.form-page > div:nth-child(3) > div > div > form > div:nth-child(1) > div > div.form-grid-container > div > div.grid-heading-row > div:nth-child(1) > div > div.col.grid-static-col.d-flex.justify-content-center > a > svg").remove()
-
+		$(".icon.icon-sm").hide()
 	},
 
 
@@ -496,4 +496,5 @@ const set_task_filter = (frm) => {
 		};
 	});
 	frm.refresh_fields();
+	$(".icon.icon-sm").hide()
 }
