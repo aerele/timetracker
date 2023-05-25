@@ -94,8 +94,8 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 										tsd.from_time between %s and %s {0}
 								""".format(filters),(user[0], from_date, to_date), as_dict=1)
 	for i in task_list:
-		if "project" in data and data["project"]:
-			data["project_name"] = frappe.db.get_value("Project",data["project"],"project_name")
+		if "project" in i and i["project"]:
+			i["project_name"] = frappe.db.get_value("Project",i["project"],"project_name")
 		task_name_list.append(i.name)
 
 	#remaining tasks with respect to the selected options
