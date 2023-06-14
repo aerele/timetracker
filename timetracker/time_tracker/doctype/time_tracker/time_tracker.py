@@ -104,7 +104,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		project_filter += "and project in  ('{0}') ".format("', '".join(projects))
 	if favourite == "1":
 		usr = "%"+user[0]+"%"
-		task_list += frappe.db.sql("""select 
+		d = frappe.db.sql("""select 
 									name, subject, project 
 								from 
 									`tabTask` 
@@ -114,9 +114,13 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 									_liked_by like %s and
 									name not in %s {0}
 								""".format(project_filter), (usr, task_name_list), as_dict=1)
+		for val in d:
+			d["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
+		task_list += d
+
 	else:
 		usr = "%"+user[0]+"%"
-		task_list += frappe.db.sql("""select 
+		d = frappe.db.sql("""select 
 								name, subject, project 
 							from 
 								`tabTask` 
@@ -126,7 +130,10 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 								name not in %s and
 								_assign like %s {0}
 							""".format(project_filter), (task_name_list, usr), as_dict=True)
-	print(task_list)
+		for val in d:
+			d["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
+		task_list += d
+	
 	return task_list
 
 
@@ -178,7 +185,7 @@ def generate_new_timesheet(new_timesheet, user):
 		row = timesheet.append("time_logs", {})
 		row.activity_type = "Execution"
 		row.from_time = datetime.datetime.strptime(i["date"], '%Y-%m-%d')
-		row.hours = i["duration"]/3600
+		row.hours = float(i["duration"])/3600
 		row.project = new_timesheet["project"]
 		row.task = i["task"]
 	timesheet.save(ignore_permissions=True)
@@ -194,14 +201,14 @@ def edit_timesheet(amend_timesheet):
 			from_time = datetime.datetime.strftime(old.from_time, '%Y-%m-%d')
 			if new["task"] == old.task and from_time == new["date"]:
 				flag = False
-				old.hours = new["duration"]/3600
+				old.hours = float(new["duration"])/3600
 				edited_time_logs.append(old.name)
 		if flag:
 			timesheet.append("time_logs",
 								{
 									"activity_type": "Execution",
 									"from_time": datetime.datetime.strptime(new["date"], '%Y-%m-%d'),
-									"hours": new["duration"]/3600,
+									"hours": float(new["duration"])/3600,
 									"project": amend_timesheet["project"],
 									"task": new["task"]
 								},

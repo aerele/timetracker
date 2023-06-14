@@ -100,6 +100,12 @@ frappe.ui.form.on('Time Tracker', {
 frappe.ui.form.on('Time Tracker', {
 	
 	refresh: function (frm) {
+		// for(var i=0 ; i < frm.doc.details.length ; i++){
+		// 	console.log(frm.doc.details[i])
+			
+		// }
+		
+
 		frm.page.set_indicator(__(""), "")
 		if(frappe.user.name !== "Administrator"){
 			frm.set_value("user", frappe.user.name)
@@ -256,7 +262,7 @@ frappe.ui.form.on('Time Tracker', {
 			}
 		});
 	},
-
+	
 	onload: function (frm) {
 		$(".icon.icon-sm").hide()
 		frm.clear_table("totals");
@@ -482,6 +488,7 @@ const compute_total = function (frm, day) {
 const set_task_filter = (frm) => {
 	let projects = []
 	let tasks = []
+	
 	for (let i = 0; i < frm.doc.project.length; i++) { projects.push(frm.doc.project[i].project) }
 	for (let i = 0; i < frm.doc.details.length; i++) { 
 		if(frm.doc.details[i]["submitted"] !== 1) tasks.push(frm.doc.details[i].task) 
