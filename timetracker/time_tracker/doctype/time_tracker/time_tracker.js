@@ -5,18 +5,18 @@
 frappe.ui.form.on('Time Tracker', {
 	refresh:function(frm) {
 	    
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 	},
 	onload_post_render:function(frm) {
 	    
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 	},
 	details_on_form_rendered:function(frm){
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 	},
 	form_render:function(frm,cdt,cdn){
             
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
            
         }
@@ -264,7 +264,7 @@ frappe.ui.form.on('Time Tracker', {
 	},
 	
 	onload: function (frm) {
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 		frm.clear_table("totals");
 		frm.add_child("totals");
 	},
@@ -291,7 +291,7 @@ frappe.ui.form.on('Time Tracker', {
 
 	from: function (frm) {
 		// if (frm.doc.project.length === 0) { frappe.throw(__("Please select atleast one project")); }
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 		let from_date = new Date(frm.doc.from);
 		let day_no = from_date.getDay();
 		if (day_no !== 1) { frm.set_value("from", frappe.datetime.add_days(frm.doc.from, -1 * (day_no - 1))); }
@@ -376,8 +376,8 @@ frappe.ui.form.on('Time Tracker', {
 		}
 		frm.refresh_fields();
 		set_task_filter(frm);
-		frm.page.set_indicator(__(""), "")
-		$(".icon.icon-sm").hide()
+		// frm.page.set_indicator(__(""), "")
+		$('[href="#icon-setting-gear"]').hide()
 	},
 
 
@@ -386,12 +386,12 @@ frappe.ui.form.on('Time Tracker', {
 
 frappe.ui.form.on('Time Tracker Detail', {
 	details_move:function(frm){
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	details_remove: function (frm) {
 		set_task_filter(frm);
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 
@@ -399,13 +399,13 @@ frappe.ui.form.on('Time Tracker Detail', {
 		let row = locals[cdt][cdn];
 		row.day_1 = "0";
 		set_task_filter(frm);
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 
 	task: function (frm) {
 		set_task_filter(frm);
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 
@@ -414,7 +414,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	day_2: function (frm, cdt, cdn) {
@@ -422,7 +422,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	day_3: function (frm, cdt, cdn) {
@@ -430,7 +430,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	day_4: function (frm, cdt, cdn) {
@@ -438,7 +438,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	day_5: function (frm, cdt, cdn) {
@@ -446,7 +446,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	day_6: function (frm, cdt, cdn) {
@@ -454,7 +454,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	},
 	day_7: function (frm, cdt, cdn) {
@@ -462,7 +462,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
-		$(".icon.icon-sm").hide()
+		$('[href="#icon-setting-gear"]').hide()
 
 	}
 });
@@ -503,5 +503,5 @@ const set_task_filter = (frm) => {
 		};
 	});
 	frm.refresh_fields();
-	$(".icon.icon-sm").hide()
+	$('[href="#icon-setting-gear"]').hide()
 }

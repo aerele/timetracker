@@ -25,28 +25,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		user = [id[0] for id in frappe.db.get_list("Employee",{"status":"Active"},"user_id",as_list = 1)]
 	#submitted tasks in timesheet
 	user_filter = "and e.user_id in ('{0}') ".format("', '".join(user))
-	print("""
-									select
-										tsd.task as name,
-										t.subject as subject,
-
-										tsd.from_time as date,
-										ts.parent_project as project,
-										tsd.hours as duration,
-										tsd.name as tsd_name,
-										ts.name as ts_name,
-										ts.docstatus as submitted
-									from
-										`tabTimesheet` as ts 
-									
-									inner join `tabTimesheet Detail` as tsd on ts.name = tsd.parent
-									inner join `tabTask` as t on tsd.task = t.name
-									inner join `tabEmployee` as e on ts.employee = e.name
-
-									where
-										ts.docstatus = 1 and
-										tsd.from_time between %s and %s {0} {1}
-								""".format(filters,user_filter),(from_date,to_date))
+	
 	task_list = frappe.db.sql("""
 									select
 										tsd.task as name,
@@ -115,7 +94,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 									name not in %s {0}
 								""".format(project_filter), (usr, task_name_list), as_dict=1)
 		for val in d:
-			d["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
+			val["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
 		task_list += d
 
 	else:
@@ -129,9 +108,9 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 								status!= 'Cancelled' and
 								name not in %s and
 								_assign like %s {0}
-							""".format(project_filter), (task_name_list, usr), as_dict=True)
+							""".format(project_filter), (task_name_list, usr), as_dict=1)
 		for val in d:
-			d["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
+			val["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
 		task_list += d
 	
 	return task_list
