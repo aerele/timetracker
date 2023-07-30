@@ -8,6 +8,7 @@
  "field_order": [
   "project",
   "task",
+  "set_as_favorite",
   "column_break_3",
   "timesheet",
   "project_name",
@@ -87,13 +88,11 @@
    "read_only_depends_on": "eval: doc.submitted;"
   },
   {
-   "columns": 1,
    "default": "0",
    "fieldname": "day_6",
    "fieldtype": "Duration",
    "hide_days": 1,
    "hide_seconds": 1,
-   "in_list_view": 1,
    "label": "Sat",
    "read_only_depends_on": "eval: doc.submitted;"
   },
@@ -118,7 +117,7 @@
    "read_only_depends_on": "eval: doc.submitted;"
   },
   {
-   "columns": 1,
+   "columns": 2,
    "fetch_from": "task.subject",
    "fieldname": "task_name",
    "fieldtype": "Read Only",
@@ -165,12 +164,18 @@
    "in_list_view": 1,
    "label": "Project Name",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "set_as_favorite",
+   "fieldtype": "Check",
+   "label": "Set as Favorite"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-22 18:59:17.986691",
+ "modified": "2023-07-29 10:48:48.474219",
  "modified_by": "Administrator",
  "module": "Time Tracker",
  "name": "Time Tracker Detail",

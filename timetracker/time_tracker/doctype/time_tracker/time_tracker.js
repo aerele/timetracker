@@ -4,11 +4,17 @@
 
 frappe.ui.form.on('Time Tracker', {
 	refresh:function(frm) {
-	    
+	    window.onbeforeunload = function() {
+			return "Data will be lost if you leave the page, are you sure?";
+		  };
 		$('[href="#icon-setting-gear"]').hide()
 	},
 	onload_post_render:function(frm) {
-	    
+		window.onbeforeunload = function() {
+			return "Data will be lost if you leave the page, are you sure?";
+		  };
+	    frm.set_df_property('details', 'cannot_delete_rows', true);
+		frm.set_df_property('details', 'cannot_add_rows', true);
 		$('[href="#icon-setting-gear"]').hide()
 	},
 	details_on_form_rendered:function(frm){
@@ -104,7 +110,8 @@ frappe.ui.form.on('Time Tracker', {
 		// 	console.log(frm.doc.details[i])
 			
 		// }
-		
+		frm.set_df_property('details', 'cannot_delete_rows', true);
+		frm.set_df_property('details', 'cannot_add_rows', true);
 
 		frm.page.set_indicator(__(""), "")
 		if(frappe.user.name !== "Administrator"){
@@ -142,7 +149,6 @@ frappe.ui.form.on('Time Tracker', {
 			// organise data for timesheet entry
 			let amend_timesheet = [];
 			let new_timesheet = [];
-
 			//for amend timesheet
 			for (let i = 0; i < with_timesheet.length; i++) {
 				let obj = {
@@ -152,23 +158,25 @@ frappe.ui.form.on('Time Tracker', {
 				};
 				for (let j = 0; j < dates.length; j++) {
 					let day = `day_${j + 1}`;
-					if (with_timesheet[i][day] && with_timesheet[i][day] !== "0") {
+					if (with_timesheet[i][day] && with_timesheet[i][day] !== "0" ) {
 						obj.data.push({
 							date: dates[j],
 							duration: with_timesheet[i][day],
-							task: with_timesheet[i].task
+							task: with_timesheet[i].task,
+							set_as_favorite: with_timesheet[i].set_as_favorite
 						});
 					}
 				}
 				for (let j = 0; j < without_timesheet.length; j++) {
-					if (without_timesheet[j].project === with_timesheet[i].project) {
+					if (without_timesheet[j].project === with_timesheet[i].project ) {
 						for (let k = 0; k < dates.length; k++) {
 							let day = `day_${k + 1}`;
 							if (without_timesheet[j][day] && without_timesheet[j][day] !== "0") {
 								obj.data.push({
 									date: dates[k],
 									duration: without_timesheet[j][day],
-									task: without_timesheet[j].task
+									task: without_timesheet[j].task,
+									set_as_favorite:without_timesheet[i].set_as_favorite
 								});
 							}
 						}
@@ -194,7 +202,8 @@ frappe.ui.form.on('Time Tracker', {
 								obj.data.push({
 									date: dates[k],
 									duration: without_timesheet[j][day],
-									task: without_timesheet[j].task
+									task: without_timesheet[j].task,
+									set_as_favorite:without_timesheet[i].set_as_favorite
 								});
 							}
 						}
@@ -351,6 +360,7 @@ frappe.ui.form.on('Time Tracker', {
 						if (flag) {
 							let task = frm.add_child("details");
 							task.task = r.message[j].name;
+							task.set_as_favorite = r.message[j].set_as_fav;
 							task.task_name = r.message[j].subject;
 							task.project = r.message[j].project;
 							task.project_name = r.message[j].project_name;
@@ -411,14 +421,18 @@ frappe.ui.form.on('Time Tracker Detail', {
 
 	day_1: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_1 = (row.day_1.split("h")[0]*3600)+(row.day_1.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
 		$('[href="#icon-setting-gear"]').hide()
 
+		
+		
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_2 = (row.day_2.split("h")[0]*3600)+(row.day_2.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -427,6 +441,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_3 = (row.day_3.split("h")[0]*3600)+(row.day_3.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -435,6 +450,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_4 = (row.day_4.split("h")[0]*3600)+(row.day_4.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -443,6 +459,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_5 = (row.day_5.split("h")[0]*3600)+(row.day_5.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -451,6 +468,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_6 = (row.day_6.split("h")[0]*3600)+(row.day_6.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -459,6 +477,7 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
+		row.day_7 = (row.day_7.split("h")[0]*3600)+(row.day_7.split("h")[1].split("m")[0]*60)
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();

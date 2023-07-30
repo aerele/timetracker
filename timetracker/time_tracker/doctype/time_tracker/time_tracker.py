@@ -50,6 +50,8 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 	for data in task_list:
 		if "project" in data and data["project"]:
 			data["project_name"] = frappe.db.get_value("Project",data["project"],"project_name")
+		if "name" in data and data["name"]:
+			data["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",data["name"],"_liked_by") and len(frappe.db.get_value("Task",data["name"],"_liked_by"))==2 else 1
 	#saved tasks in timesheet
 	task_list += frappe.db.sql("""
 									select
@@ -75,6 +77,8 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 	for i in task_list:
 		if "project" in i and i["project"]:
 			i["project_name"] = frappe.db.get_value("Project",i["project"],"project_name")
+		if "name" in i and i["name"]:
+			i["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",i["name"],"_liked_by") and len(frappe.db.get_value("Task",i["name"],"_liked_by"))==2 else 1
 		task_name_list.append(i.name)
 
 	#remaining tasks with respect to the selected options
@@ -95,6 +99,8 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 								""".format(project_filter), (usr, task_name_list), as_dict=1)
 		for val in d:
 			val["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
+			if "name" in val and val["name"]:
+				val["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",val["name"],"_liked_by") and len(frappe.db.get_value("Task",val["name"],"_liked_by"))==2 else 1
 		task_list += d
 
 	else:
@@ -111,6 +117,9 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 							""".format(project_filter), (task_name_list, usr), as_dict=1)
 		for val in d:
 			val["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
+			if "name" in val and val["name"]:
+				val["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",val["name"],"_liked_by") and len(frappe.db.get_value("Task",val["name"],"_liked_by"))==2 else 1
+
 		task_list += d
 	
 	return task_list
@@ -151,6 +160,8 @@ def submit_timesheet(timesheet_list):
 
 
 def generate_new_timesheet(new_timesheet, user):
+	print("new ts")
+	print(new_timesheet)
 	if not "project" in new_timesheet:
 		frappe.throw("No project found")
 	# get name from employee doctype where user_id = user
@@ -167,6 +178,10 @@ def generate_new_timesheet(new_timesheet, user):
 		row.hours = float(i["duration"])/3600
 		row.project = new_timesheet["project"]
 		row.task = i["task"]
+		if i["task"]:
+			frappe.db.set_value("Task",i["task"],"_liked_by","[\"{0}\"]".format(frappe.session.user))
+			# print('''update `tabTask` set _liked_by='{0}' where name = "{1}" '''.format("['Administrator']",i["task"]))
+			# frappe.db.sql('''update `tabTask` set _liked_by = '{0}' where name = {1} '''.format("['Administrator']",i["task"]))
 	timesheet.save(ignore_permissions=True)
 
 
@@ -179,6 +194,9 @@ def edit_timesheet(amend_timesheet):
 		for old in timesheet.time_logs:
 			from_time = datetime.datetime.strftime(old.from_time, '%Y-%m-%d')
 			if new["task"] == old.task and from_time == new["date"]:
+				if new["task"]:
+					if "set_as_favorite" in new:
+						frappe.db.set_value("Task",new["task"],"_liked_by","[\"{0}\"]".format(frappe.session.user))
 				flag = False
 				old.hours = float(new["duration"])/3600
 				edited_time_logs.append(old.name)
