@@ -421,7 +421,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 
 	day_1: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_1 = (row.day_1.split("h")[0]*3600)+(row.day_1.split("h")[1].split("m")[0]*60)
+		if(row.day_1.includes("h") && !row.day_1.includes("m") ){
+			row.day_1 = (row.day_1.split("h")[0]*3600)
+		}
+		else if(row.day_1.includes("m") && !row.day_1.includes("h")){
+			row.day_1 = (row.day_1.split("m")[0]*60)
+		}
+		else if (row.day_1.includes("m") && row.day_1.includes("h")){
+			row.day_1 = (row.day_1.split("h")[0]*3600)+(row.day_1.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -432,7 +440,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_2 = (row.day_2.split("h")[0]*3600)+(row.day_2.split("h")[1].split("m")[0]*60)
+		if(row.day_2.includes("h") && !row.day_2.includes("m") ){
+			row.day_2 = (row.day_2.split("h")[0]*3600)
+		}
+		else if(row.day_2.includes("m") && !row.day_2.includes("h")){
+			row.day_2 = (row.day_2.split("m")[0]*60)
+		}
+		else if (row.day_2.includes("m") && row.day_2.includes("h")){
+			row.day_2 = (row.day_2.split("h")[0]*3600)+(row.day_2.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -441,7 +457,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_3 = (row.day_3.split("h")[0]*3600)+(row.day_3.split("h")[1].split("m")[0]*60)
+		if(row.day_3.includes("h") && !row.day_3.includes("m") ){
+			row.day_3 = (row.day_3.split("h")[0]*3600)
+		}
+		else if(row.day_3.includes("m") && !row.day_3.includes("h")){
+			row.day_3 = (row.day_3.split("m")[0]*60)
+		}
+		else if (row.day_3.includes("m") && row.day_3.includes("h")){
+			row.day_3 = (row.day_3.split("h")[0]*3600)+(row.day_3.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -450,7 +474,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_4 = (row.day_4.split("h")[0]*3600)+(row.day_4.split("h")[1].split("m")[0]*60)
+		if(row.day_4.includes("h") && !row.day_4.includes("m") ){
+			row.day_4 = (row.day_4.split("h")[0]*3600)
+		}
+		else if(row.day_4.includes("m") && !row.day_4.includes("h")){
+			row.day_4 = (row.day_4.split("m")[0]*60)
+		}
+		else if (row.day_4.includes("m") && row.day_4.includes("h")){
+			row.day_4 = (row.day_4.split("h")[0]*3600)+(row.day_4.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -459,7 +491,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_5 = (row.day_5.split("h")[0]*3600)+(row.day_5.split("h")[1].split("m")[0]*60)
+		if(row.day_5.includes("h") && !row.day_5.includes("m") ){
+			row.day_5 = (row.day_5.split("h")[0]*3600)
+		}
+		else if(row.day_5.includes("m") && !row.day_5.includes("h")){
+			row.day_5 = (row.day_5.split("m")[0]*60)
+		}
+		else if (row.day_5.includes("m") && row.day_5.includes("h")){
+			row.day_5 = (row.day_5.split("h")[0]*3600)+(row.day_5.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -468,7 +508,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_6 = (row.day_6.split("h")[0]*3600)+(row.day_6.split("h")[1].split("m")[0]*60)
+		if(row.day_6.includes("h") && !row.day_6.includes("m") ){
+			row.day_6 = (row.day_6.split("h")[0]*3600)
+		}
+		else if(row.day_6.includes("m") && !row.day_6.includes("h")){
+			row.day_6 = (row.day_6.split("m")[0]*60)
+		}
+		else if (row.day_6.includes("m") && row.day_6.includes("h")){
+			row.day_6 = (row.day_6.split("h")[0]*3600)+(row.day_6.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -477,7 +525,15 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		row.day_7 = (row.day_7.split("h")[0]*3600)+(row.day_7.split("h")[1].split("m")[0]*60)
+		if(row.day_7.includes("h") && !row.day_7.includes("m") ){
+			row.day_7 = (row.day_7.split("h")[0]*3600)
+		}
+		else if(row.day_7.includes("m") && !row.day_7.includes("h")){
+			row.day_7 = (row.day_7.split("m")[0]*60)
+		}
+		else if (row.day_7.includes("m") && row.day_7.includes("h")){
+			row.day_7 = (row.day_7.split("h")[0]*3600)+(row.day_7.split("h")[1].split("m")[0]*60)
+		}
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
