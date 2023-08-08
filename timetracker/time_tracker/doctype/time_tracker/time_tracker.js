@@ -421,15 +421,31 @@ frappe.ui.form.on('Time Tracker Detail', {
 
 	day_1: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_1.includes("h") && !row.day_1.includes("m") ){
-			row.day_1 = (row.day_1.split("h")[0]*3600)
+		if(typeof row.day_1 == "string"){
+			if(!isValidString(row.day_1)){
+				row.day_1 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_1 = row.day_1.toLowerCase();
+				if (row.day_1.includes("m") && row.day_1.includes("h")){
+					row.day_1 = (row.day_1.split("h")[0]*3600)+(row.day_1.split("h")[1].split("m")[0]*60)
+				}
+				
+				else if(row.day_1.includes("m") && !row.day_1.includes("h")){
+					row.day_1 = (row.day_1.split("m")[0]*60)
+				}
+				else if(row.day_1.includes("h") && !row.day_1.includes("m") ){
+					row.day_1 = (row.day_1.split("h")[0]*3600)
+				}
+			}
+			
 		}
-		else if(row.day_1.includes("m") && !row.day_1.includes("h")){
-			row.day_1 = (row.day_1.split("m")[0]*60)
-		}
-		else if (row.day_1.includes("m") && row.day_1.includes("h")){
-			row.day_1 = (row.day_1.split("h")[0]*3600)+(row.day_1.split("h")[1].split("m")[0]*60)
-		}
+		
 		compute_total(frm, "day_1");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -440,15 +456,30 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_2: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_2.includes("h") && !row.day_2.includes("m") ){
-			row.day_2 = (row.day_2.split("h")[0]*3600)
+		if(typeof row.day_2 == "string"){
+			if(!isValidString(row.day_2)){
+				row.day_2 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_2 = row.day_2.toLowerCase();
+				if(row.day_2.includes("h") && !row.day_2.includes("m") ){
+					row.day_2 = (row.day_2.split("h")[0]*3600)
+				}
+				else if(row.day_2.includes("m") && !row.day_2.includes("h")){
+					row.day_2 = (row.day_2.split("m")[0]*60)
+				}
+				else if (row.day_2.includes("m") && row.day_2.includes("h")){
+					row.day_2 = (row.day_2.split("h")[0]*3600)+(row.day_2.split("h")[1].split("m")[0]*60)
+				}
+			}
+			
 		}
-		else if(row.day_2.includes("m") && !row.day_2.includes("h")){
-			row.day_2 = (row.day_2.split("m")[0]*60)
-		}
-		else if (row.day_2.includes("m") && row.day_2.includes("h")){
-			row.day_2 = (row.day_2.split("h")[0]*3600)+(row.day_2.split("h")[1].split("m")[0]*60)
-		}
+		
 		compute_total(frm, "day_2");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
 		frm.refresh_fields();
@@ -457,14 +488,28 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_3: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_3.includes("h") && !row.day_3.includes("m") ){
-			row.day_3 = (row.day_3.split("h")[0]*3600)
-		}
-		else if(row.day_3.includes("m") && !row.day_3.includes("h")){
-			row.day_3 = (row.day_3.split("m")[0]*60)
-		}
-		else if (row.day_3.includes("m") && row.day_3.includes("h")){
-			row.day_3 = (row.day_3.split("h")[0]*3600)+(row.day_3.split("h")[1].split("m")[0]*60)
+		if(typeof row.day_3 == "string"){
+			if(!isValidString(row.day_3)){
+				row.day_3 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_3 = row.day_3.toLowerCase();
+				if(row.day_3.includes("h") && !row.day_3.includes("m") ){
+					row.day_3 = (row.day_3.split("h")[0]*3600)
+				}
+				else if(row.day_3.includes("m") && !row.day_3.includes("h")){
+					row.day_3 = (row.day_3.split("m")[0]*60)
+				}
+				else if (row.day_3.includes("m") && row.day_3.includes("h")){
+					row.day_3 = (row.day_3.split("h")[0]*3600)+(row.day_3.split("h")[1].split("m")[0]*60)
+				}
+			}
+			
 		}
 		compute_total(frm, "day_3");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
@@ -474,14 +519,28 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_4: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_4.includes("h") && !row.day_4.includes("m") ){
-			row.day_4 = (row.day_4.split("h")[0]*3600)
-		}
-		else if(row.day_4.includes("m") && !row.day_4.includes("h")){
-			row.day_4 = (row.day_4.split("m")[0]*60)
-		}
-		else if (row.day_4.includes("m") && row.day_4.includes("h")){
-			row.day_4 = (row.day_4.split("h")[0]*3600)+(row.day_4.split("h")[1].split("m")[0]*60)
+		if(typeof row.day_4 == "string"){
+			if(!isValidString(row.day_4)){
+				row.day_4 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_4 = row.day_4.toLowerCase();
+				if(row.day_4.includes("h") && !row.day_4.includes("m") ){
+					row.day_4 = (row.day_4.split("h")[0]*3600)
+				}
+				else if(row.day_4.includes("m") && !row.day_4.includes("h")){
+					row.day_4 = (row.day_4.split("m")[0]*60)
+				}
+				else if (row.day_4.includes("m") && row.day_4.includes("h")){
+					row.day_4 = (row.day_4.split("h")[0]*3600)+(row.day_4.split("h")[1].split("m")[0]*60)
+				}
+			}
+			
 		}
 		compute_total(frm, "day_4");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
@@ -491,14 +550,28 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_5: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_5.includes("h") && !row.day_5.includes("m") ){
-			row.day_5 = (row.day_5.split("h")[0]*3600)
-		}
-		else if(row.day_5.includes("m") && !row.day_5.includes("h")){
-			row.day_5 = (row.day_5.split("m")[0]*60)
-		}
-		else if (row.day_5.includes("m") && row.day_5.includes("h")){
-			row.day_5 = (row.day_5.split("h")[0]*3600)+(row.day_5.split("h")[1].split("m")[0]*60)
+		if(typeof row.day_5 == "string"){
+			if(!isValidString(row.day_5)){
+				row.day_5 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_5 = row.day_5.toLowerCase();
+				if(row.day_5.includes("h") && !row.day_5.includes("m") ){
+					row.day_5 = (row.day_5.split("h")[0]*3600)
+				}
+				else if(row.day_5.includes("m") && !row.day_5.includes("h")){
+					row.day_5 = (row.day_5.split("m")[0]*60)
+				}
+				else if (row.day_5.includes("m") && row.day_5.includes("h")){
+					row.day_5 = (row.day_5.split("h")[0]*3600)+(row.day_5.split("h")[1].split("m")[0]*60)
+				}
+			}
+			
 		}
 		compute_total(frm, "day_5");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
@@ -508,14 +581,28 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_6: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_6.includes("h") && !row.day_6.includes("m") ){
-			row.day_6 = (row.day_6.split("h")[0]*3600)
-		}
-		else if(row.day_6.includes("m") && !row.day_6.includes("h")){
-			row.day_6 = (row.day_6.split("m")[0]*60)
-		}
-		else if (row.day_6.includes("m") && row.day_6.includes("h")){
-			row.day_6 = (row.day_6.split("h")[0]*3600)+(row.day_6.split("h")[1].split("m")[0]*60)
+		if(typeof row.day_6 == "string"){
+			if(!isValidString(row.day_6)){
+				row.day_6 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_6 = row.day_6.toLowerCase();
+				if(row.day_6.includes("h") && !row.day_6.includes("m") ){
+					row.day_6 = (row.day_6.split("h")[0]*3600)
+				}
+				else if(row.day_6.includes("m") && !row.day_6.includes("h")){
+					row.day_6 = (row.day_6.split("m")[0]*60)
+				}
+				else if (row.day_6.includes("m") && row.day_6.includes("h")){
+					row.day_6 = (row.day_6.split("h")[0]*3600)+(row.day_6.split("h")[1].split("m")[0]*60)
+				}
+			}
+			
 		}
 		compute_total(frm, "day_6");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
@@ -525,14 +612,28 @@ frappe.ui.form.on('Time Tracker Detail', {
 	},
 	day_7: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
-		if(row.day_7.includes("h") && !row.day_7.includes("m") ){
-			row.day_7 = (row.day_7.split("h")[0]*3600)
-		}
-		else if(row.day_7.includes("m") && !row.day_7.includes("h")){
-			row.day_7 = (row.day_7.split("m")[0]*60)
-		}
-		else if (row.day_7.includes("m") && row.day_7.includes("h")){
-			row.day_7 = (row.day_7.split("h")[0]*3600)+(row.day_7.split("h")[1].split("m")[0]*60)
+		if(typeof row.day_7 == "string"){
+			if(!isValidString(row.day_7)){
+				row.day_7 = 0
+				row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
+				frappe.msgprint({message:"Invalid Input",
+				indicator: 'red',
+					clear: false,
+				wide:false})
+			}
+			else{
+				row.day_7 = row.day_7.toLowerCase();
+				if(row.day_7.includes("h") && !row.day_7.includes("m") ){
+					row.day_7 = (row.day_7.split("h")[0]*3600)
+				}
+				else if(row.day_7.includes("m") && !row.day_7.includes("h")){
+					row.day_7 = (row.day_7.split("m")[0]*60)
+				}
+				else if (row.day_7.includes("m") && row.day_7.includes("h")){
+					row.day_7 = (row.day_7.split("h")[0]*3600)+(row.day_7.split("h")[1].split("m")[0]*60)
+				}
+			}
+			
 		}
 		compute_total(frm, "day_7");
 		row.total = (parseInt(row.day_1 || "0") + parseInt(row.day_2 || "0") + parseInt(row.day_3 || "0") + parseInt(row.day_4 || "0") + parseInt(row.day_5 || "0") + parseInt(row.day_6 || "0") + parseInt(row.day_7 || "0"));
@@ -559,6 +660,23 @@ const compute_total = function (frm, day) {
 	frm.refresh_fields();
 }
 
+function isValidString(inputString) {
+	if(inputString == "hm" || inputString == "0hm" || inputString == "h0m"){
+		inputString = "0h0m"
+	}
+	const lowercaseString = inputString.toLowerCase();
+	let hCount = 0;
+	let mCount = 0;
+  
+	for (const char of lowercaseString) {
+	  if (char === 'h') hCount++;
+	  else if (char === 'm') mCount++;
+	  else if (!/\d/.test(char)) return false; // Return false if any other character is found
+	}
+  
+	return hCount === 1 && mCount === 1;
+  }
+  
 
 const set_task_filter = (frm) => {
 	let projects = []
