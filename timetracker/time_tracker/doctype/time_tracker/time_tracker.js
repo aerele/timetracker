@@ -176,7 +176,7 @@ frappe.ui.form.on('Time Tracker', {
 									date: dates[k],
 									duration: without_timesheet[j][day],
 									task: without_timesheet[j].task,
-									set_as_favorite:without_timesheet[i].set_as_favorite
+									set_as_favorite:without_timesheet[j].set_as_favorite
 								});
 							}
 						}
@@ -203,7 +203,7 @@ frappe.ui.form.on('Time Tracker', {
 									date: dates[k],
 									duration: without_timesheet[j][day],
 									task: without_timesheet[j].task,
-									set_as_favorite:without_timesheet[i].set_as_favorite
+									set_as_favorite:without_timesheet[j].set_as_favorite
 								});
 							}
 						}
@@ -228,10 +228,11 @@ frappe.ui.form.on('Time Tracker', {
 							message: __('Timesheets Generated Successfully'),
 							indicator: 'green'
 						});
-						frm.trigger("from");
+						// frm.trigger("from");
 					}
 				}
 			});
+			frm.page.set_indicator(__(""),"")
 		});
 
 		//submit button
@@ -338,6 +339,9 @@ frappe.ui.form.on('Time Tracker', {
 					from_date: frm.doc.from,
 					to_date: frm.doc.to
 				},
+				freeze:true,
+				freeze_message:"Fetching...",
+				await : true,
 				callback: function (r) {
 					frm.clear_table("details");
 					frm.clear_table("totals");

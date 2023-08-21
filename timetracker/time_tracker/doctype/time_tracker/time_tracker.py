@@ -51,7 +51,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		if "project" in data and data["project"]:
 			data["project_name"] = frappe.db.get_value("Project",data["project"],"project_name")
 		if "name" in data and data["name"]:
-			data["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",data["name"],"_liked_by") and len(frappe.db.get_value("Task",data["name"],"_liked_by"))==2 else 1
+			data["set_as_fav"]=0 if not frappe.db.get_value("Task",data["name"],"_liked_by") or "[]" in frappe.db.get_value("Task",data["name"],"_liked_by") else 1
 	#saved tasks in timesheet
 	task_list += frappe.db.sql("""
 									select
@@ -78,7 +78,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		if "project" in i and i["project"]:
 			i["project_name"] = frappe.db.get_value("Project",i["project"],"project_name")
 		if "name" in i and i["name"]:
-			i["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",i["name"],"_liked_by") and len(frappe.db.get_value("Task",i["name"],"_liked_by"))==2 else 1
+			i["set_as_fav"]=0 if not frappe.db.get_value("Task",i["name"],"_liked_by") or "[]" in frappe.db.get_value("Task",i["name"],"_liked_by") else 1
 		task_name_list.append(i.name)
 
 	#remaining tasks with respect to the selected options
@@ -100,7 +100,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		for val in d:
 			val["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
 			if "name" in val and val["name"]:
-				val["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",val["name"],"_liked_by") and len(frappe.db.get_value("Task",val["name"],"_liked_by"))==2 else 1
+				val["set_as_fav"]=0 if not frappe.db.get_value("Task",val["name"],"_liked_by") or "[]" in frappe.db.get_value("Task",val["name"],"_liked_by") else 1
 		task_list += d
 
 	else:
@@ -118,7 +118,7 @@ def get_tasks(projects,favourite, user, from_date, to_date):
 		for val in d:
 			val["project_name"] = frappe.db.get_value("Project",val["project"],"project_name")
 			if "name" in val and val["name"]:
-				val["set_as_fav"]=0 if "[]" in frappe.db.get_value("Task",val["name"],"_liked_by") and len(frappe.db.get_value("Task",val["name"],"_liked_by"))==2 else 1
+				val["set_as_fav"]=0 if not frappe.db.get_value("Task",val["name"],"_liked_by") or "[]" in frappe.db.get_value("Task",val["name"],"_liked_by") else 1
 
 		task_list += d
 	
