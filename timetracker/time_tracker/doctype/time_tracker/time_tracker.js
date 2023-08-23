@@ -5,13 +5,19 @@
 frappe.ui.form.on('Time Tracker', {
 	refresh:function(frm) {
 	    window.onbeforeunload = function() {
-			return "Data will be lost if you leave the page, are you sure?";
+			if(cur_frm.page.indicator.text() == "Not Saved"){
+				return "Data will be lost if you leave the page, are you sure?";
+			}
+			
 		  };
 		$('[href="#icon-setting-gear"]').hide()
 	},
 	onload_post_render:function(frm) {
 		window.onbeforeunload = function() {
-			return "Data will be lost if you leave the page, are you sure?";
+			if(cur_frm.page.indicator.text() == "Not Saved"){
+				return "Data will be lost if you leave the page, are you sure?";
+			}
+			
 		  };
 	    frm.set_df_property('details', 'cannot_delete_rows', true);
 		frm.set_df_property('details', 'cannot_add_rows', true);
@@ -25,7 +31,7 @@ frappe.ui.form.on('Time Tracker', {
 		$('[href="#icon-setting-gear"]').hide()
 
            
-        }
+	}
 	
 })
 
