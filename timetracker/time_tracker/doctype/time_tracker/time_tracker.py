@@ -160,8 +160,6 @@ def submit_timesheet(timesheet_list):
 
 
 def generate_new_timesheet(new_timesheet, user):
-	print("new ts")
-	print(new_timesheet)
 	if not "project" in new_timesheet:
 		frappe.throw("No project found")
 	# get name from employee doctype where user_id = user
@@ -178,8 +176,11 @@ def generate_new_timesheet(new_timesheet, user):
 		row.hours = float(i["duration"])/3600
 		row.project = new_timesheet["project"]
 		row.task = i["task"]
-		if i["task"]:
-			frappe.db.set_value("Task",i["task"],"_liked_by","[\"{0}\"]".format(frappe.session.user))
+		if i["task"] and "set_as_favorite" in i:
+			if i["set_as_favorite"]:
+				frappe.db.set_value("Task",i["task"],"_liked_by","[\"{0}\"]".format(frappe.session.user))
+			else:
+				frappe.db.set_value("Task",i["task"],"_liked_by",None)
 			# print('''update `tabTask` set _liked_by='{0}' where name = "{1}" '''.format("['Administrator']",i["task"]))
 			# frappe.db.sql('''update `tabTask` set _liked_by = '{0}' where name = {1} '''.format("['Administrator']",i["task"]))
 	timesheet.save(ignore_permissions=True)
@@ -196,7 +197,10 @@ def edit_timesheet(amend_timesheet):
 			if new["task"] == old.task and from_time == new["date"]:
 				if new["task"]:
 					if "set_as_favorite" in new:
-						frappe.db.set_value("Task",new["task"],"_liked_by","[\"{0}\"]".format(frappe.session.user))
+						if new["set_as_favorite"]:
+							frappe.db.set_value("Task",new["task"],"_liked_by","[\"{0}\"]".format(frappe.session.user))
+						else:
+							frappe.db.set_value("Task",new["task"],"_liked_by",None)
 				flag = False
 				old.hours = float(new["duration"])/3600
 				edited_time_logs.append(old.name)
