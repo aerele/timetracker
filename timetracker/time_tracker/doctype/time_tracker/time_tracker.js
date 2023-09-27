@@ -144,7 +144,6 @@ frappe.ui.form.on('Time Tracker', {
 				dates.push(frappe.datetime.get_datetime_as_string(from_date).split(" ")[0]);
 				from_date.setDate(from_date.getDate() + 1);
 			}
-
 			//seperate details from timesheet entry and new entry
 			let details_data = frm.doc.details;
 			details_data = details_data.filter(item => (item.total && item.total !== "0" && item.submitted !== 1));
@@ -234,7 +233,8 @@ frappe.ui.form.on('Time Tracker', {
 							message: __('Timesheets Generated Successfully'),
 							indicator: 'green'
 						});
-						// frm.trigger("from");
+						frappe.on_save = 1
+						frm.trigger("from");
 					}
 				}
 			});
@@ -396,7 +396,12 @@ frappe.ui.form.on('Time Tracker', {
 		}
 		frm.refresh_fields();
 		set_task_filter(frm);
-		// frm.page.set_indicator(__(""), "")
+		frm.page.set_indicator(__(""), "")
+		if(frappe.on_save == 1)
+			setTimeout(()=>{
+				frm.page.set_indicator(__(""), "")
+				frappe.on_save=0
+			}, 1000)
 		$('[href="#icon-setting-gear"]').hide()
 	},
 
